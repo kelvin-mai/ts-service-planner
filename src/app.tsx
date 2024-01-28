@@ -1,12 +1,20 @@
 import { RootProvider } from '@/context/root-provider';
-import { useNprogress } from '@/hooks';
+import { RouterProvider, createRouter } from '@tanstack/react-router';
+
+import { routeTree } from './routeTree.gen';
+
+const router = createRouter({ routeTree });
+
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: typeof router;
+  }
+}
 
 export const App = () => {
-  useNprogress();
-
   return (
     <RootProvider>
-      <h1>Hello world</h1>
+      <RouterProvider router={router} />
     </RootProvider>
   );
 };
