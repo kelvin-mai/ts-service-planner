@@ -11,6 +11,7 @@ import { Route as IndexImport } from './routes/index'
 
 const PricingLazyImport = createFileRoute('/pricing')()
 const BlogLazyImport = createFileRoute('/blog')()
+const BlogIdLazyImport = createFileRoute('/blog/$id')()
 
 // Create/Update Routes
 
@@ -29,6 +30,11 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const BlogIdLazyRoute = BlogIdLazyImport.update({
+  path: '/$id',
+  getParentRoute: () => BlogLazyRoute,
+} as any).lazy(() => import('./routes/blog.$id.lazy').then((d) => d.Route))
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -45,6 +51,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PricingLazyImport
       parentRoute: typeof rootRoute
     }
+    '/blog/$id': {
+      preLoaderRoute: typeof BlogIdLazyImport
+      parentRoute: typeof BlogLazyImport
+    }
   }
 }
 
@@ -52,6 +62,6 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
-  BlogLazyRoute,
+  BlogLazyRoute.addChildren([BlogIdLazyRoute]),
   PricingLazyRoute,
 ])

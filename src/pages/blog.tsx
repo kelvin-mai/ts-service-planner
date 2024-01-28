@@ -1,26 +1,73 @@
+import { format, subHours } from 'date-fns';
 import {
+  Avatar,
   Box,
-  Breadcrumbs,
   Button,
   Card,
+  Chip,
   Container,
   Divider,
-  Unstable_Grid2 as Grid,
-  Link,
   Stack,
-  SvgIcon,
   Typography,
 } from '@mui/material';
-import { ArrowLeft, ArrowRight } from '@untitled-ui/icons-react';
+import { useParams } from '@tanstack/react-router';
 
-import { RouterLink, Seo } from '@/components/common';
-import { PostCard, PostNewsletter } from '@/components/blog';
+import { RouterLink, Seo, Breadcrumbs, type BreadcrumbLink } from '@/components/common';
+import { PostComment, PostCommentAdd, PostNewsletter, PostContent } from '@/components/blog';
 import { posts } from '@/api/blog';
 
+interface Comment {
+  id: string;
+  authorAvatar: string;
+  authorName: string;
+  authorRole: string;
+  content: string;
+  createdAt: number;
+  isLiked: boolean;
+  likes: number;
+}
+
+const useComments = (): Comment[] => {
+  return [
+    {
+      id: 'd0ab3d02ef737fa6b007e35d',
+      authorAvatar: '/assets/avatars/avatar-alcides-antonio.png',
+      authorName: 'Alcides Antonio',
+      authorRole: 'Product Designer',
+      content:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      createdAt: subHours(new Date(), 2).getTime(),
+      isLiked: true,
+      likes: 12,
+    },
+    {
+      id: '3ac1e17289e38a84108efdf3',
+      authorAvatar: '/assets/avatars/avatar-jie-yan-song.png',
+      authorName: 'Jie Yan Song',
+      authorRole: 'Web Developer',
+      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.',
+      createdAt: subHours(new Date(), 8).getTime(),
+      isLiked: false,
+      likes: 8,
+    },
+  ];
+};
+
 export const BlogPage = () => {
+  const { id } = useParams({ strict: false });
+  const post = posts.find((p) => p.id === id);
+  const comments = useComments();
+
+  const publishedAt = format(post.publishedAt, 'MMMM d, yyyy');
+
+  const breadcrumbs: BreadcrumbLink[] = [
+    { href: '/', title: 'Home' },
+    { href: '/blog', title: 'Blog' },
+  ];
+
   return (
     <>
-      <Seo title='Blog: Post List' />
+      <Seo title='Blog: Post Details' />
       <Box
         component='main'
         sx={{
@@ -30,37 +77,11 @@ export const BlogPage = () => {
       >
         <Container maxWidth='xl'>
           <Stack spacing={1}>
-            <Typography variant='h3'>Blog</Typography>
+            <Typography variant='h3'>Post</Typography>
             <Breadcrumbs
-              separator={
-                <Box
-                  sx={{ backgroundColor: 'neutral.500', borderRadius: '50%', height: 4, width: 4 }}
-                />
-              }
-            >
-              <Link
-                color='text.primary'
-                component={RouterLink}
-                href='/'
-                variant='subtitle2'
-              >
-                Dashboard
-              </Link>
-              <Link
-                color='text.primary'
-                component={RouterLink}
-                href='/'
-                variant='subtitle2'
-              >
-                Blog
-              </Link>
-              <Typography
-                color='text.secondary'
-                variant='subtitle2'
-              >
-                List
-              </Typography>
-            </Breadcrumbs>
+              links={breadcrumbs}
+              current={post?.title!}
+            />
           </Stack>
           <Card
             elevation={16}
@@ -78,81 +99,69 @@ export const BlogPage = () => {
             <Typography variant='subtitle1'>Hello, Admin</Typography>
             <Button
               component={RouterLink}
-              href='/blog/new'
+              href='/blogs/new'
               variant='contained'
             >
-              New Post
+              Edit Post
             </Button>
           </Card>
-          <Typography variant='h4'>Recent Articles</Typography>
-          <Typography
-            color='text.secondary'
-            sx={{ mt: 2 }}
-            variant='body1'
-          >
-            Discover the latest news, tips and user research insights from Acme.
-          </Typography>
-          <Typography
-            color='text.secondary'
-            variant='body1'
-          >
-            You will learn about web infrastructure, design systems and devops APIs best practices.
-          </Typography>
-          <Divider sx={{ my: 4 }} />
-          <Grid
-            container
-            spacing={4}
-          >
-            {posts.map((post) => (
-              <Grid
-                key={post.title}
-                xs={12}
-                md={6}
-              >
-                <PostCard
-                  authorAvatar={post.author.avatar}
-                  authorName={post.author.name}
-                  category={post.category}
-                  cover={post.cover}
-                  publishedAt={post.publishedAt}
-                  readTime={post.readTime}
-                  shortDescription={post.shortDescription}
-                  title={post.title}
-                  sx={{ height: '100%' }}
-                />
-              </Grid>
-            ))}
-          </Grid>
-          <Stack
-            alignItems='center'
-            direction='row'
-            justifyContent='center'
-            spacing={1}
-            sx={{
-              mt: 4,
-              mb: 8,
-            }}
-          >
-            <Button
-              disabled
-              startIcon={
-                <SvgIcon>
-                  <ArrowLeft />
-                </SvgIcon>
-              }
+          <Stack spacing={3}>
+            <div>
+              <Chip label={post.category} />
+            </div>
+            <Typography variant='h3'>{post.title}</Typography>
+            <Typography
+              color='text.secondary'
+              variant='subtitle1'
             >
-              Newer
-            </Button>
-            <Button
-              endIcon={
-                <SvgIcon>
-                  <ArrowRight />
-                </SvgIcon>
-              }
+              {post.shortDescription}
+            </Typography>
+            <Stack
+              alignItems='center'
+              direction='row'
+              spacing={2}
+              sx={{ mt: 3 }}
             >
-              Older posts
-            </Button>
+              <Avatar src={post.author.avatar} />
+              <div>
+                <Typography variant='subtitle2'>
+                  By {post.author.name} • {publishedAt}
+                </Typography>
+                <Typography
+                  color='text.secondary'
+                  variant='body2'
+                >
+                  {post.readTime} read
+                </Typography>
+              </div>
+            </Stack>
           </Stack>
+          <Box
+            sx={{
+              backgroundImage: `url(${post.cover})`,
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              borderRadius: 1,
+              height: 380,
+              mt: 3,
+            }}
+          />
+          {post.content && (
+            <Container sx={{ py: 3 }}>
+              <PostContent content={post.content} />
+            </Container>
+          )}
+          <Divider sx={{ my: 3 }} />
+          <Stack spacing={2}>
+            {comments.map((comment) => (
+              <PostComment
+                key={comment.id}
+                {...comment}
+              />
+            ))}
+          </Stack>
+          <Divider sx={{ my: 3 }} />
+          <PostCommentAdd />
           <Box sx={{ mt: 8 }}>
             <PostNewsletter />
           </Box>

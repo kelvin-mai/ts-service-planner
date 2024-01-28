@@ -16,6 +16,7 @@ import {
 import { RouterLink } from '@/components/common';
 
 type PostCardProps = {
+  id: string;
   authorAvatar: string;
   authorName: string;
   category: string;
@@ -28,6 +29,7 @@ type PostCardProps = {
 };
 
 export const PostCard: FC<PostCardProps> = ({
+  id,
   authorAvatar,
   authorName,
   category,
@@ -52,7 +54,7 @@ export const PostCard: FC<PostCardProps> = ({
     <Card {...props}>
       <CardMedia
         component={RouterLink}
-        href='/'
+        href={`/blog/${id}`}
         image={cover}
         sx={{ height: 280 }}
       />
@@ -63,7 +65,7 @@ export const PostCard: FC<PostCardProps> = ({
         <Link
           color='text.primary'
           component={RouterLink}
-          href='/'
+          href={`/blog/${id}`}
           variant='h5'
         >
           {title}

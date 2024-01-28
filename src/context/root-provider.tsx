@@ -1,6 +1,8 @@
 import type { FC, PropsWithChildren } from 'react';
 import { ThemeProvider } from '@mui/material';
 import { HelmetProvider } from 'react-helmet-async';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 import { createTheme } from '@/theme';
 
@@ -15,7 +17,9 @@ export const RootProvider: FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <HelmetProvider>
-      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <ThemeProvider theme={theme}>{children}</ThemeProvider>
+      </LocalizationProvider>
     </HelmetProvider>
   );
 };

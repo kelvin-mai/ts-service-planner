@@ -1,5 +1,7 @@
-import { RootProvider } from '@/context/root-provider';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
+
+import { RootProvider } from '@/context/root-provider';
+import { Toaster } from '@/components/common';
 
 import { routeTree } from './routeTree.gen';
 
@@ -15,6 +17,7 @@ export const App = () => {
   return (
     <RootProvider>
       <RouterProvider router={router} />
+      <Toaster />
     </RootProvider>
   );
 };

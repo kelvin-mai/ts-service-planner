@@ -8,7 +8,7 @@ type SeoProps = {
 export const Seo: FC<SeoProps> = ({ title }) => {
   return (
     <Helmet>
-      <title>{title ? title + '| Service Planner' : 'Service Planner'}</title>
+      <title>{title ? title + ' | Service Planner' : 'Service Planner'}</title>
     </Helmet>
   );
 };
