@@ -10,11 +10,12 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { useParams } from '@tanstack/react-router';
+import { LoaderFunction, useLoaderData } from 'react-router';
 
 import { RouterLink, Seo, Breadcrumbs, type BreadcrumbLink } from '@/components/common';
 import { PostComment, PostCommentAdd, PostNewsletter, PostContent } from '@/components/blog';
-import { posts } from '@/api/blog';
+import { Post, posts } from '@/api/blog';
+import { ErrorPage } from './error';
 
 interface Comment {
   id: string;
@@ -53,9 +54,12 @@ const useComments = (): Comment[] => {
   ];
 };
 
-export const BlogPage = () => {
-  const { id } = useParams({ strict: false });
-  const post = posts.find((p) => p.id === id);
+export const loader: LoaderFunction = async ({ params }) => {
+  return posts.find((p) => p.id === params.id);
+};
+
+export const Component = () => {
+  const post = useLoaderData() as Post;
   const comments = useComments();
 
   const publishedAt = format(post.publishedAt, 'MMMM d, yyyy');
@@ -170,3 +174,5 @@ export const BlogPage = () => {
     </>
   );
 };
+
+export const ErrorBoundary = () => <ErrorPage code={404} />;

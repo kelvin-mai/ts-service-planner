@@ -1,5 +1,30 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createBrowserRouter } from 'react-router-dom';
 
-export const Route = createFileRoute('/')({
-  component: () => <div>Hello /!</div>
-})
+import { ErrorPage } from '@/pages/error';
+
+const HomePage = () => {
+  return <>Hello World</>;
+};
+
+export const router = createBrowserRouter([
+  {
+    index: true,
+    Component: HomePage,
+  },
+  {
+    path: '/pricing',
+    lazy: () => import('@/pages/pricing'),
+  },
+  {
+    path: '/blog',
+    lazy: () => import('@/pages/blogs'),
+  },
+  {
+    path: '/blog/:id',
+    lazy: () => import('@/pages/blog'),
+  },
+  {
+    path: '/*',
+    Component: ErrorPage,
+  },
+]);

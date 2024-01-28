@@ -5,7 +5,6 @@ import {
   Container,
   Divider,
   Unstable_Grid2 as Grid,
-  Link,
   Stack,
   SvgIcon,
   Typography,
@@ -16,7 +15,7 @@ import { RouterLink, Seo, Breadcrumbs, type BreadcrumbLink } from '@/components/
 import { PostCard, PostNewsletter } from '@/components/blog';
 import { posts } from '@/api/blog';
 
-export const BlogsPage = () => {
+export const Component = () => {
   const breadcrumbs: BreadcrumbLink[] = [{ href: '/', title: 'Home' }];
   return (
     <>

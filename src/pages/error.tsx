@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import { Box, Button, Container, Typography, useMediaQuery, type Theme } from '@mui/material';
 
 import { Seo, RouterLink } from '@/components/common';

@@ -12,7 +12,7 @@ import {
 import { Seo } from '@/components/common';
 import { PricingFaqs, PricingPlan, PricingPlanIcon } from '@/components/pricing';
 
-export const PricingPage = () => {
+export const Component = () => {
   return (
     <>
       <Seo title='Pricing' />

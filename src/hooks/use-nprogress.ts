@@ -1,12 +1,12 @@
 import nProgress from 'nprogress';
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router';
 
 import { useMounted } from './use-mounted';
-import { useRouterState } from '@tanstack/react-router';
 
 export const useNprogress = () => {
   const mounted = useMounted();
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const pathname = useLocation();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
