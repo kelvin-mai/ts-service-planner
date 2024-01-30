@@ -1,3 +1,5 @@
+import { toast } from 'react-hot-toast';
+
 const baseUrl = 'http://localhost:8080';
 const apiUrl = `${baseUrl}/api`;
 
@@ -26,6 +28,7 @@ export const createPost = async (body: any) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
   });
+  toast.success('Successfully created post');
   return await res.json();
 };
 
@@ -35,6 +38,7 @@ export const updatePost = async (id: string, body: any) => {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
   });
+  toast.success('Successfully updated post');
   return await res.json();
 };
 
@@ -42,5 +46,6 @@ export const deletePost = async (id: string) => {
   const res = await fetch(`${apiUrl}/post/${id}`, {
     method: 'DELETE',
   });
+  toast.success('Successfully deleted post');
   return await res.json();
 };

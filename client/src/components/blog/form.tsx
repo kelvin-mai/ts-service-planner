@@ -1,4 +1,5 @@
 import { useState, type FC, type FormEvent } from 'react';
+import { useNavigate } from 'react-router';
 import {
   Button,
   Card,
@@ -9,39 +10,39 @@ import {
   Typography,
 } from '@mui/material';
 
-import { createPost, updatePost, deletePost } from '@/api/post';
-import { RouterLink } from '../common';
-import { useNavigate } from 'react-router';
+import { RouterLink } from '@/components/common';
 
 type PostFormProps =
   | {
       mode: 'create';
       post?: any;
+      onSubmit: any;
+      onDelete?: any;
     }
   | {
       mode: 'edit';
       post: any;
+      onSubmit: any;
+      onDelete: any;
     };
 
-export const PostForm: FC<PostFormProps> = ({ mode, post }) => {
+export const PostForm: FC<PostFormProps> = ({ mode, post, onSubmit, onDelete }) => {
   const [data, setData] = useState(post);
   const [pending, setPending] = useState(false);
   const navigate = useNavigate();
+  const to = mode === 'create' ? '/blog' : `/blog/${post.id}`;
 
-  const submitFn = (data: any) =>
-    mode === 'create' ? createPost(data) : updatePost(post.id, data);
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setPending(true);
-    const { post } = await submitFn(data);
-    navigate(`/blog/${post.id}`);
+    onSubmit(data);
+    navigate(to);
   };
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     if (mode === 'edit') {
       setPending(true);
-      const res = await deletePost(post.id);
+      onDelete();
       navigate(`/blog`);
     }
   };
@@ -70,7 +71,7 @@ export const PostForm: FC<PostFormProps> = ({ mode, post }) => {
           <Button
             component={RouterLink}
             color='inherit'
-            href={mode === 'create' ? '/blog' : `/blog/${post.id}`}
+            href={to}
             disabled={pending}
           >
             Cancel

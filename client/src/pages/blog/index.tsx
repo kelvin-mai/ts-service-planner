@@ -1,4 +1,3 @@
-import { LoaderFunction, ShouldRevalidateFunction, useLoaderData } from 'react-router';
 import {
   Box,
   Button,
@@ -11,20 +10,22 @@ import {
   Typography,
 } from '@mui/material';
 import { ArrowLeft, ArrowRight } from '@untitled-ui/icons-react';
+import { useQuery } from '@tanstack/react-query';
 
 import { RouterLink, Seo, Breadcrumbs, type BreadcrumbLink } from '@/components/common';
 import { PostCard, PostNewsletter } from '@/components/blog';
 import { Post, fetchPosts } from '@/api/post';
-
-export const loader: LoaderFunction = async ({ request, params, context }) => {
-  console.log({ request, params, context });
-  const { posts } = await fetchPosts();
-  return posts;
-};
+import { json } from 'react-router';
 
 export const Component = () => {
-  const posts = useLoaderData() as Post[];
+  const { data, isPending, isError } = useQuery<{ posts: Post[] }>({
+    queryKey: ['posts'],
+    queryFn: fetchPosts,
+  });
   const breadcrumbs: BreadcrumbLink[] = [{ href: '/', title: 'Home' }];
+  if (isError) {
+    throw json({}, { status: 500 });
+  }
   return (
     <>
       <Seo title='Blog: Post List' />
@@ -84,26 +85,27 @@ export const Component = () => {
             container
             spacing={4}
           >
-            {posts.map((post) => (
-              <Grid
-                key={post.id}
-                xs={12}
-                md={6}
-              >
-                <PostCard
-                  id={post.id}
-                  // authorAvatar={post.author.avatar}
-                  // authorName={post.author.name}
-                  category={post.category}
-                  // cover={post.cover}
-                  // publishedAt={post.publishedAt}
-                  // readTime={post.readTime}
-                  shortDescription={post.description}
-                  title={post.title}
-                  sx={{ height: '100%' }}
-                />
-              </Grid>
-            ))}
+            {!isPending &&
+              data!.posts.map((post) => (
+                <Grid
+                  key={post.id}
+                  xs={12}
+                  md={6}
+                >
+                  <PostCard
+                    id={post.id}
+                    // authorAvatar={post.author.avatar}
+                    // authorName={post.author.name}
+                    category={post.category}
+                    // cover={post.cover}
+                    // publishedAt={post.publishedAt}
+                    // readTime={post.readTime}
+                    shortDescription={post.description}
+                    title={post.title}
+                    sx={{ height: '100%' }}
+                  />
+                </Grid>
+              ))}
           </Grid>
           <Stack
             alignItems='center'

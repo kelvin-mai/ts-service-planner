@@ -9,6 +9,7 @@ export const Toaster: FC = () => {
       position='bottom-right'
       toastOptions={{
         style: {
+          fontFamily: theme.typography.fontFamily,
           backdropFilter: 'blur(6px)',
           background: alpha(theme.palette.neutral[900], 0.8),
           color: theme.palette.common.white,

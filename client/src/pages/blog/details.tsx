@@ -1,6 +1,7 @@
 import { format, subHours } from 'date-fns';
 import { Box, Button, Card, Chip, Container, Divider, Stack, Typography } from '@mui/material';
-import { LoaderFunction, useLoaderData } from 'react-router';
+import { json, useParams } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
 
 import { RouterLink, Seo, Breadcrumbs, type BreadcrumbLink } from '@/components/common';
 import { PostComment, PostCommentAdd, PostNewsletter, PostContent } from '@/components/blog';
@@ -14,8 +15,6 @@ interface Comment {
   authorRole: string;
   content: string;
   createdAt: number;
-  isLiked: boolean;
-  likes: number;
 }
 
 const useComments = (): Comment[] => {
@@ -28,8 +27,6 @@ const useComments = (): Comment[] => {
       content:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
       createdAt: subHours(new Date(), 2).getTime(),
-      isLiked: true,
-      likes: 12,
     },
     {
       id: '3ac1e17289e38a84108efdf3',
@@ -38,19 +35,20 @@ const useComments = (): Comment[] => {
       authorRole: 'Web Developer',
       content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.',
       createdAt: subHours(new Date(), 8).getTime(),
-      isLiked: false,
-      likes: 8,
     },
   ];
 };
 
-export const loader: LoaderFunction = async ({ params }) => {
-  const { post } = await fetchPost(params.id as string);
-  return post;
-};
-
 export const Component = () => {
-  const post = useLoaderData() as Post;
+  const { id } = useParams();
+  const { data, isPending, isError } = useQuery<{ post: Post }>({
+    queryKey: ['posts', id],
+    queryFn: () => fetchPost(id!),
+  });
+  if (isError) {
+    throw json({}, { status: 404 });
+  }
+  const post = data?.post;
   const comments = useComments();
 
   // const publishedAt = format(post.publishedAt, 'MMMM d, yyyy');
@@ -60,7 +58,9 @@ export const Component = () => {
     { href: '/blog', title: 'Blog' },
   ];
 
-  return (
+  return isPending ? (
+    <>loading...</>
+  ) : (
     <>
       <Seo title='Blog: Post Details' />
       <Box
@@ -75,7 +75,7 @@ export const Component = () => {
             <Typography variant='h3'>Post</Typography>
             <Breadcrumbs
               links={breadcrumbs}
-              current={post?.title!}
+              current={post.title}
             />
           </Stack>
           <Card
