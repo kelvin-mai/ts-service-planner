@@ -8,8 +8,6 @@ type PostCommentProps = {
   authorRole: string;
   content: string;
   createdAt: number;
-  isLiked: boolean;
-  likes: number;
 };
 
 export const PostComment: FC<PostCommentProps> = ({

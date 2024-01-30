@@ -1,30 +1,36 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { Outlet, createBrowserRouter } from 'react-router-dom';
 
 import { ErrorPage } from '@/pages/error';
 
-const HomePage = () => {
-  return <>Hello World</>;
-};
-
 export const router = createBrowserRouter([
   {
-    index: true,
-    Component: HomePage,
-  },
-  {
-    path: '/pricing',
-    lazy: () => import('@/pages/pricing'),
-  },
-  {
-    path: '/blog',
-    lazy: () => import('@/pages/blogs'),
-  },
-  {
-    path: '/blog/:id',
-    lazy: () => import('@/pages/blog'),
-  },
-  {
-    path: '/*',
-    Component: ErrorPage,
+    element: <Outlet />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        Component: () => <>Hello World</>,
+      },
+      {
+        path: '/pricing',
+        lazy: () => import('@/pages/pricing'),
+      },
+      {
+        path: '/blog',
+        lazy: () => import('@/pages/blog/index'),
+      },
+      {
+        path: '/blog/new',
+        lazy: () => import('@/pages/blog/create'),
+      },
+      {
+        path: '/blog/:id',
+        lazy: () => import('@/pages/blog/details'),
+      },
+      {
+        path: '/blog/:id/edit',
+        lazy: () => import('@/pages/blog/update'),
+      },
+    ],
   },
 ]);

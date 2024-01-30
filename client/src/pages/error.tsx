@@ -1,25 +1,13 @@
 import type { FC } from 'react';
+import { useRouteError, isRouteErrorResponse } from 'react-router';
 import { Box, Button, Container, Typography, useMediaQuery, type Theme } from '@mui/material';
 
 import { Seo, RouterLink } from '@/components/common';
 
-type ErrorPageProps = {
-  code?: 401 | 404 | 500;
-};
-
-export const ErrorPage: FC<ErrorPageProps> = ({ code = 404 }) => {
+export const ErrorPage: FC = () => {
+  const error = useRouteError();
   const mdUp = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
-  const getStatus = (code: 401 | 404 | 500) => {
-    switch (code) {
-      case 401:
-        return 'Authorization Required';
-      case 404:
-        return 'Not found';
-      case 500:
-        return 'Internal Server Error';
-    }
-  };
-  const status = getStatus(code);
+  const status = isRouteErrorResponse(error) ? error.statusText : 'Unknown Error';
 
   return (
     <>
@@ -44,7 +32,7 @@ export const ErrorPage: FC<ErrorPageProps> = ({ code = 404 }) => {
             <Box
               alt={status}
               component='img'
-              src={`/assets/errors/error-${code}.png`}
+              src={`/assets/errors/error-404.png`}
               sx={{
                 height: 'auto',
                 maxWidth: '100%',

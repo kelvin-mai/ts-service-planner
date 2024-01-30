@@ -22,16 +22,18 @@ export const fetchPost = async (id: string) => {
 
 export const createPost = async (body: any) => {
   const res = await fetch(`${apiUrl}/post`, {
-    body,
+    body: JSON.stringify(body),
     method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
   });
   return await res.json();
 };
 
 export const updatePost = async (id: string, body: any) => {
   const res = await fetch(`${apiUrl}/post/${id}`, {
-    body,
+    body: JSON.stringify(body),
     method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
   });
   return await res.json();
 };

@@ -1,21 +1,10 @@
 import { format, subHours } from 'date-fns';
-import {
-  Avatar,
-  Box,
-  Button,
-  Card,
-  Chip,
-  Container,
-  Divider,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Card, Chip, Container, Divider, Stack, Typography } from '@mui/material';
 import { LoaderFunction, useLoaderData } from 'react-router';
 
 import { RouterLink, Seo, Breadcrumbs, type BreadcrumbLink } from '@/components/common';
 import { PostComment, PostCommentAdd, PostNewsletter, PostContent } from '@/components/blog';
 import { Post } from '@/api/blog';
-import { ErrorPage } from './error';
 import { fetchPost } from '@/api/post';
 
 interface Comment {
@@ -105,7 +94,7 @@ export const Component = () => {
             <Typography variant='subtitle1'>Hello, Admin</Typography>
             <Button
               component={RouterLink}
-              href='/blogs/new'
+              href={`/blog/${post.id}/edit`}
               variant='contained'
             >
               Edit Post
@@ -176,5 +165,3 @@ export const Component = () => {
     </>
   );
 };
-
-export const ErrorBoundary = () => <ErrorPage code={404} />;

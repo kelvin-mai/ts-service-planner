@@ -1,4 +1,4 @@
-import { LoaderFunction, useLoaderData } from 'react-router';
+import { LoaderFunction, ShouldRevalidateFunction, useLoaderData } from 'react-router';
 import {
   Box,
   Button,
@@ -16,7 +16,8 @@ import { RouterLink, Seo, Breadcrumbs, type BreadcrumbLink } from '@/components/
 import { PostCard, PostNewsletter } from '@/components/blog';
 import { Post, fetchPosts } from '@/api/post';
 
-export const loader: LoaderFunction = async () => {
+export const loader: LoaderFunction = async ({ request, params, context }) => {
+  console.log({ request, params, context });
   const { posts } = await fetchPosts();
   return posts;
 };
@@ -85,7 +86,7 @@ export const Component = () => {
           >
             {posts.map((post) => (
               <Grid
-                key={post.title}
+                key={post.id}
                 xs={12}
                 md={6}
               >
