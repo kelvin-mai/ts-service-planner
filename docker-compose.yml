@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  pgsql:
+    container_name: pgsql
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: pgsql_db
+    volumes:
+      - data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  minio:
+    container_name: minio
+    image: bitnami/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - storage:/data
+
+volumes:
+  data:
+  storage:
