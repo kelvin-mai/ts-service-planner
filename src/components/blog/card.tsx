@@ -17,12 +17,12 @@ import { RouterLink } from '@/components/common';
 
 type PostCardProps = {
   id: string;
-  authorAvatar: string;
-  authorName: string;
+  authorAvatar?: string;
+  authorName?: string;
   category: string;
-  cover: string;
-  publishedAt: number;
-  readTime: string;
+  cover?: string;
+  publishedAt?: number;
+  readTime?: string;
   shortDescription: string;
   sx?: SxProps;
   title: string;
@@ -30,11 +30,11 @@ type PostCardProps = {
 
 export const PostCard: FC<PostCardProps> = ({
   id,
-  authorAvatar,
-  authorName,
+  authorAvatar = '/assets/avatars/avatar-jie-yan-song.png',
+  authorName = 'Jie Yan Song',
   category,
-  cover,
-  publishedAt,
+  cover = '/assets/covers/business-2-4x4-large.png',
+  publishedAt = Date.now(),
   readTime,
   shortDescription,
   title,

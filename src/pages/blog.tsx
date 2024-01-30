@@ -14,8 +14,9 @@ import { LoaderFunction, useLoaderData } from 'react-router';
 
 import { RouterLink, Seo, Breadcrumbs, type BreadcrumbLink } from '@/components/common';
 import { PostComment, PostCommentAdd, PostNewsletter, PostContent } from '@/components/blog';
-import { Post, posts } from '@/api/blog';
+import { Post } from '@/api/blog';
 import { ErrorPage } from './error';
+import { fetchPost } from '@/api/post';
 
 interface Comment {
   id: string;
@@ -55,14 +56,15 @@ const useComments = (): Comment[] => {
 };
 
 export const loader: LoaderFunction = async ({ params }) => {
-  return posts.find((p) => p.id === params.id);
+  const { post } = await fetchPost(params.id as string);
+  return post;
 };
 
 export const Component = () => {
   const post = useLoaderData() as Post;
   const comments = useComments();
 
-  const publishedAt = format(post.publishedAt, 'MMMM d, yyyy');
+  // const publishedAt = format(post.publishedAt, 'MMMM d, yyyy');
 
   const breadcrumbs: BreadcrumbLink[] = [
     { href: '/', title: 'Home' },
@@ -126,7 +128,7 @@ export const Component = () => {
               spacing={2}
               sx={{ mt: 3 }}
             >
-              <Avatar src={post.author.avatar} />
+              {/* <Avatar src={post.author.avatar} />
               <div>
                 <Typography variant='subtitle2'>
                   By {post.author.name} • {publishedAt}
@@ -137,7 +139,7 @@ export const Component = () => {
                 >
                   {post.readTime} read
                 </Typography>
-              </div>
+              </div> */}
             </Stack>
           </Stack>
           <Box

@@ -1,3 +1,4 @@
+import { LoaderFunction, useLoaderData } from 'react-router';
 import {
   Box,
   Button,
@@ -13,9 +14,15 @@ import { ArrowLeft, ArrowRight } from '@untitled-ui/icons-react';
 
 import { RouterLink, Seo, Breadcrumbs, type BreadcrumbLink } from '@/components/common';
 import { PostCard, PostNewsletter } from '@/components/blog';
-import { posts } from '@/api/blog';
+import { Post, fetchPosts } from '@/api/post';
+
+export const loader: LoaderFunction = async () => {
+  const { posts } = await fetchPosts();
+  return posts;
+};
 
 export const Component = () => {
+  const posts = useLoaderData() as Post[];
   const breadcrumbs: BreadcrumbLink[] = [{ href: '/', title: 'Home' }];
   return (
     <>
@@ -84,13 +91,13 @@ export const Component = () => {
               >
                 <PostCard
                   id={post.id}
-                  authorAvatar={post.author.avatar}
-                  authorName={post.author.name}
+                  // authorAvatar={post.author.avatar}
+                  // authorName={post.author.name}
                   category={post.category}
-                  cover={post.cover}
-                  publishedAt={post.publishedAt}
-                  readTime={post.readTime}
-                  shortDescription={post.shortDescription}
+                  // cover={post.cover}
+                  // publishedAt={post.publishedAt}
+                  // readTime={post.readTime}
+                  shortDescription={post.description}
                   title={post.title}
                   sx={{ height: '100%' }}
                 />
