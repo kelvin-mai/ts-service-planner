@@ -9,6 +9,7 @@ export type Post = {
   description: string;
   category: string;
   content?: string;
+  readTime: number;
   publishedAt: string;
 };
 

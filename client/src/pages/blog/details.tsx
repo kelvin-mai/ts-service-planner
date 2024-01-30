@@ -4,40 +4,8 @@ import { json, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 
 import { RouterLink, Seo, Breadcrumbs, type BreadcrumbLink } from '@/components/common';
-import { PostComment, PostCommentAdd, PostNewsletter, PostContent } from '@/components/blog';
-import { Post } from '@/api/blog';
-import { fetchPost } from '@/api/post';
-
-interface Comment {
-  id: string;
-  authorAvatar: string;
-  authorName: string;
-  authorRole: string;
-  content: string;
-  createdAt: number;
-}
-
-const useComments = (): Comment[] => {
-  return [
-    {
-      id: 'd0ab3d02ef737fa6b007e35d',
-      authorAvatar: '/assets/avatars/avatar-alcides-antonio.png',
-      authorName: 'Alcides Antonio',
-      authorRole: 'Product Designer',
-      content:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      createdAt: subHours(new Date(), 2).getTime(),
-    },
-    {
-      id: '3ac1e17289e38a84108efdf3',
-      authorAvatar: '/assets/avatars/avatar-jie-yan-song.png',
-      authorName: 'Jie Yan Song',
-      authorRole: 'Web Developer',
-      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.',
-      createdAt: subHours(new Date(), 8).getTime(),
-    },
-  ];
-};
+import { PostNewsletter, PostContent } from '@/components/blog';
+import { fetchPost, type Post } from '@/api/post';
 
 export const Component = () => {
   const { id } = useParams();
@@ -48,8 +16,6 @@ export const Component = () => {
   if (isError) {
     throw json({}, { status: 404 });
   }
-  const post = data?.post;
-  const comments = useComments();
 
   // const publishedAt = format(post.publishedAt, 'MMMM d, yyyy');
 
@@ -75,7 +41,7 @@ export const Component = () => {
             <Typography variant='h3'>Post</Typography>
             <Breadcrumbs
               links={breadcrumbs}
-              current={post.title}
+              current={data.post.title}
             />
           </Stack>
           <Card
@@ -94,7 +60,7 @@ export const Component = () => {
             <Typography variant='subtitle1'>Hello, Admin</Typography>
             <Button
               component={RouterLink}
-              href={`/blog/${post.id}/edit`}
+              href={`/blog/${data.post.id}/edit`}
               variant='contained'
             >
               Edit Post
@@ -102,14 +68,14 @@ export const Component = () => {
           </Card>
           <Stack spacing={3}>
             <div>
-              <Chip label={post.category} />
+              <Chip label={data.post.category} />
             </div>
-            <Typography variant='h3'>{post.title}</Typography>
+            <Typography variant='h3'>{data.post.title}</Typography>
             <Typography
               color='text.secondary'
               variant='subtitle1'
             >
-              {post.shortDescription}
+              {data.post.description}
             </Typography>
             <Stack
               alignItems='center'
@@ -117,23 +83,23 @@ export const Component = () => {
               spacing={2}
               sx={{ mt: 3 }}
             >
-              {/* <Avatar src={post.author.avatar} />
+              {/* <Avatar src={post.author.avatar} /> */}
               <div>
-                <Typography variant='subtitle2'>
+                {/* <Typography variant='subtitle2'>
                   By {post.author.name} • {publishedAt}
-                </Typography>
+                </Typography> */}
                 <Typography
                   color='text.secondary'
                   variant='body2'
                 >
-                  {post.readTime} read
+                  {data.post.readTime} min read
                 </Typography>
-              </div> */}
+              </div>
             </Stack>
           </Stack>
           <Box
             sx={{
-              backgroundImage: `url(${post.cover})`,
+              // backgroundImage: `url(${data.post.cover || ''})`,
               backgroundPosition: 'center',
               backgroundSize: 'cover',
               borderRadius: 1,
@@ -141,22 +107,12 @@ export const Component = () => {
               mt: 3,
             }}
           />
-          {post.content && (
+          {data.post.content && (
             <Container sx={{ py: 3 }}>
-              <PostContent content={post.content} />
+              <PostContent content={data.post.content} />
             </Container>
           )}
           <Divider sx={{ my: 3 }} />
-          <Stack spacing={2}>
-            {comments.map((comment) => (
-              <PostComment
-                key={comment.id}
-                {...comment}
-              />
-            ))}
-          </Stack>
-          <Divider sx={{ my: 3 }} />
-          <PostCommentAdd />
           <Box sx={{ mt: 8 }}>
             <PostNewsletter />
           </Box>

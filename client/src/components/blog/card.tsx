@@ -22,7 +22,7 @@ type PostCardProps = {
   category: string;
   cover?: string;
   publishedAt?: number;
-  readTime?: string;
+  readTime: number;
   shortDescription: string;
   sx?: SxProps;
   title: string;
@@ -107,7 +107,7 @@ export const PostCard: FC<PostCardProps> = ({
             sx={{ flexGrow: 1 }}
             variant='body2'
           >
-            {readTime} read
+            {readTime} min read
           </Typography>
         </Stack>
       </CardContent>

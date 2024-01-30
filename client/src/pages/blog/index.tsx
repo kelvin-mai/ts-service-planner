@@ -99,7 +99,7 @@ export const Component = () => {
                     category={post.category}
                     // cover={post.cover}
                     // publishedAt={post.publishedAt}
-                    // readTime={post.readTime}
+                    readTime={post.readTime}
                     shortDescription={post.description}
                     title={post.title}
                     sx={{ height: '100%' }}

@@ -10,7 +10,8 @@ import {
   Typography,
 } from '@mui/material';
 
-import { RouterLink } from '@/components/common';
+import { RichTextEditor, RouterLink } from '@/components/common';
+import { useRichTextEditor } from '@/hooks/use-rich-text';
 
 type PostFormProps =
   | {
@@ -30,12 +31,13 @@ export const PostForm: FC<PostFormProps> = ({ mode, post, onSubmit, onDelete }) 
   const [data, setData] = useState(post);
   const [pending, setPending] = useState(false);
   const navigate = useNavigate();
+  const { editor, getContent } = useRichTextEditor(post.content);
   const to = mode === 'create' ? '/blog' : `/blog/${post.id}`;
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setPending(true);
-    onSubmit(data);
+    onSubmit({ ...data, content: getContent() });
     navigate(to);
   };
 
@@ -135,6 +137,27 @@ export const PostForm: FC<PostFormProps> = ({ mode, post, onSubmit, onDelete }) 
                     onChange={(e) => setData({ ...data, category: e.target.value })}
                   />
                 </Stack>
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent>
+            <Grid
+              container
+              spacing={3}
+            >
+              <Grid
+                xs={12}
+                md={4}
+              >
+                <Typography variant='h6'>Content</Typography>
+              </Grid>
+              <Grid
+                xs={12}
+                md={8}
+              >
+                <RichTextEditor editor={editor} />
               </Grid>
             </Grid>
           </CardContent>
