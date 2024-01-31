@@ -97,7 +97,7 @@ export const Component = () => {
                     // authorAvatar={post.author.avatar}
                     // authorName={post.author.name}
                     category={post.category}
-                    // cover={post.cover}
+                    cover={post.cover}
                     // publishedAt={post.publishedAt}
                     readTime={post.readTime}
                     shortDescription={post.description}

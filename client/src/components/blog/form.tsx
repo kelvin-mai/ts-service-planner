@@ -1,6 +1,7 @@
 import { useState, type FC, type FormEvent } from 'react';
 import { useNavigate } from 'react-router';
 import {
+  Box,
   Button,
   Card,
   CardContent,
@@ -10,9 +11,9 @@ import {
   Typography,
 } from '@mui/material';
 
-import { RouterLink } from '@/components/common';
-import { RichTextEditor } from '@/components/rich-text-editor';
+import { RichTextEditor, RouterLink } from '@/components/common';
 import { useRichTextEditor } from '@/hooks/use-rich-text';
+import { FileUploader } from '../common/file-uploader/file-uploader';
 
 type PostFormProps =
   | {
@@ -28,6 +29,14 @@ type PostFormProps =
       onDelete: any;
     };
 
+const fileToBase64 = (file: Blob) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+
 export const PostForm: FC<PostFormProps> = ({ mode, post, onSubmit, onDelete }) => {
   const [data, setData] = useState(post);
   const [pending, setPending] = useState(false);
@@ -35,10 +44,12 @@ export const PostForm: FC<PostFormProps> = ({ mode, post, onSubmit, onDelete }) 
   const { editor, getContent } = useRichTextEditor(post.content);
   const to = mode === 'create' ? '/blog' : `/blog/${post.id}`;
 
+  const [cover, setCover] = useState<string | null>('/assets/covers/abstract-1-4x3-large.png');
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setPending(true);
-    onSubmit({ ...data, content: getContent() });
+    onSubmit({ ...data, cover, content: getContent() });
     navigate(to);
   };
 
@@ -48,6 +59,15 @@ export const PostForm: FC<PostFormProps> = ({ mode, post, onSubmit, onDelete }) 
       onDelete();
       navigate(`/blog`);
     }
+  };
+
+  const handleCoverDrop = async ([file]: File[]) => {
+    const data = (await fileToBase64(file)) as string;
+    setCover(data);
+  };
+
+  const handleCoverRemove = async () => {
+    setCover(null);
   };
 
   return (
@@ -136,6 +156,87 @@ export const PostForm: FC<PostFormProps> = ({ mode, post, onSubmit, onDelete }) 
                     name='category'
                     value={data?.category || ''}
                     onChange={(e) => setData({ ...data, category: e.target.value })}
+                  />
+                </Stack>
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent>
+            <Grid
+              container
+              spacing={3}
+            >
+              <Grid
+                xs={12}
+                md={4}
+              >
+                <Typography variant='h6'>Post cover</Typography>
+              </Grid>
+              <Grid
+                xs={12}
+                md={8}
+              >
+                <Stack spacing={3}>
+                  {cover ? (
+                    <Box
+                      sx={{
+                        backgroundImage: `url(${cover})`,
+                        backgroundPosition: 'center',
+                        backgroundSize: 'cover',
+                        borderRadius: 1,
+                        height: 230,
+                        mt: 3,
+                      }}
+                    />
+                  ) : (
+                    <Box
+                      sx={{
+                        alignItems: 'center',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        border: 1,
+                        borderRadius: 1,
+                        borderStyle: 'dashed',
+                        borderColor: 'divider',
+                        height: 230,
+                        mt: 3,
+                        p: 3,
+                      }}
+                    >
+                      <Typography
+                        align='center'
+                        color='text.secondary'
+                        variant='h6'
+                      >
+                        Select a cover image
+                      </Typography>
+                      <Typography
+                        align='center'
+                        color='text.secondary'
+                        sx={{ mt: 1 }}
+                        variant='subtitle1'
+                      >
+                        Image used for the blog post cover and also for Open Graph meta
+                      </Typography>
+                    </Box>
+                  )}
+                  <div>
+                    <Button
+                      color='inherit'
+                      disabled={!cover}
+                      onClick={handleCoverRemove}
+                    >
+                      Remove photo
+                    </Button>
+                  </div>
+                  <FileUploader
+                    accept={{ 'image/*': [] }}
+                    maxFiles={1}
+                    onDrop={handleCoverDrop}
+                    caption='(SVG, JPG, PNG, or gif maximum 900x400)'
                   />
                 </Stack>
               </Grid>

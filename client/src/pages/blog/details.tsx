@@ -98,10 +98,13 @@ export const Component = () => {
             </Stack>
           </Stack>
           <Box
+            component='img'
+            src={data.post.cover}
+            alt='cover'
             sx={{
-              // backgroundImage: `url(${data.post.cover || ''})`,
-              backgroundPosition: 'center',
-              backgroundSize: 'cover',
+              width: '100%',
+              objectPosition: 'center',
+              objectFit: 'cover',
               borderRadius: 1,
               height: 380,
               mt: 3,

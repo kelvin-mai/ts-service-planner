@@ -10,8 +10,16 @@ export const getPosts: RequestHandler = async (req, res) => {
 };
 
 export const createPost: RequestHandler = async (req, res) => {
-  const data = req.body;
-  const post = await prisma.post.create({ data });
+  const { category, content, cover, description, title } = req.body;
+  const post = await prisma.post.create({
+    data: {
+      category,
+      content,
+      cover,
+      description,
+      title,
+    },
+  });
   return res.json({ post });
 };
 
@@ -25,12 +33,12 @@ export const getPost: RequestHandler = async (req, res) => {
 };
 
 export const updatePost: RequestHandler = async (req, res) => {
-  const data = req.body;
+  const { category, content, cover, description, title } = req.body;
   const post = await prisma.post.update({
     where: {
       id: req.params.id,
     },
-    data,
+    data: { category, content, cover, description, title },
   });
   return res.json({ post });
 };
