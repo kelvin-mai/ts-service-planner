@@ -1,7 +1,6 @@
 import type { RequestHandler } from 'express';
 
 import { prisma } from '../../lib/prisma';
-import { getFileURL, uploadFile } from '../../lib/minio';
 
 export const getPosts: RequestHandler = async (req, res) => {
   const posts = await prisma.post.findMany({
@@ -11,21 +10,16 @@ export const getPosts: RequestHandler = async (req, res) => {
 };
 
 export const createPost: RequestHandler = async (req, res) => {
-  const { category, content, cover, description, title } = req.body;
+  const { category, content, description, title } = req.body;
 
   const post = await prisma.post.create({
     data: {
       category,
       content,
-      cover,
       description,
       title,
     },
   });
-
-  const buffer = Buffer.from(content.split(',')[1], 'base64');
-
-  await uploadFile(`${post.id}-post-cover`, buffer);
 
   return res.json({ post });
 };
@@ -37,19 +31,18 @@ export const getPost: RequestHandler = async (req, res) => {
     },
   });
 
-  const cover = post?.id ? await getFileURL(`post-${post.id}-cover`) : '';
-
-  return res.json({ ...post, cover });
+  return res.json({ post });
 };
 
 export const updatePost: RequestHandler = async (req, res) => {
-  const { category, content, cover, description, title } = req.body;
+  const { category, content, description, title } = req.body;
   const post = await prisma.post.update({
     where: {
       id: req.params.id,
     },
-    data: { category, content, cover, description, title },
+    data: { category, content, description, title },
   });
+
   return res.json({ post });
 };
 

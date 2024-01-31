@@ -3,8 +3,8 @@ import * as Minio from 'minio';
 export const minio = new Minio.Client({
   endPoint: 'localhost',
   port: 9000,
-  accessKey: '9UfD9BNQgrEHhgnV',
-  secretKey: 'y0Ec95v9FRUn9XI6xUXSPiGyQiosw9X8',
+  accessKey: 'OMZZnwYfgYRbcZPW',
+  secretKey: 'GhjudYpnujI0EGVuPSnccUE9JEyiko1m',
   useSSL: false,
 });
 
@@ -28,4 +28,8 @@ export const getFileURL = (filename: string) => {
       resolve(url);
     });
   });
+};
+
+export const deleteFile = async (filename: string) => {
+  await minio.removeObject('example', filename);
 };

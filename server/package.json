@@ -4,7 +4,6 @@
   "license": "MIT",
   "scripts": {
     "dev": "ts-node src/index.ts",
-    "temp": "ts-node src/temp.ts",
     "lint": "eslint . --ext ts --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write \"**/*.{js,ts,json}\" --cache",
     "seed": "ts-node src/seed.ts"

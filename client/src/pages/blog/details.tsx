@@ -7,6 +7,9 @@ import { RouterLink, Seo, Breadcrumbs, type BreadcrumbLink } from '@/components/
 import { PostNewsletter, PostContent } from '@/components/blog';
 import { fetchPost, type Post } from '@/api/post';
 
+const baseUrl = 'http://localhost:8080';
+const apiUrl = `${baseUrl}/api`;
+
 export const Component = () => {
   const { id } = useParams();
   const { data, isPending, isError } = useQuery<{ post: Post }>({
@@ -99,7 +102,8 @@ export const Component = () => {
           </Stack>
           <Box
             component='img'
-            src={data.post.cover}
+            src={`${apiUrl}/file/post-cover-${id}`}
+            crossOrigin='anonymous'
             alt='cover'
             sx={{
               width: '100%',

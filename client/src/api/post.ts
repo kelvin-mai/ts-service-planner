@@ -1,7 +1,8 @@
 import { toast } from 'react-hot-toast';
 
-const baseUrl = 'http://localhost:8080';
-const apiUrl = `${baseUrl}/api`;
+import { getApiUrl } from '@/utils/url';
+
+const apiUrl = getApiUrl();
 
 export type Post = {
   id: string;

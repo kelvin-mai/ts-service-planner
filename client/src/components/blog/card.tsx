@@ -15,12 +15,14 @@ import {
 
 import { RouterLink } from '@/components/common';
 
+const baseUrl = 'http://localhost:8080';
+const apiUrl = `${baseUrl}/api`;
+
 type PostCardProps = {
   id: string;
   authorAvatar?: string;
   authorName?: string;
   category: string;
-  cover?: string;
   publishedAt?: number;
   readTime: number;
   shortDescription: string;
@@ -33,7 +35,6 @@ export const PostCard: FC<PostCardProps> = ({
   authorAvatar = '/assets/avatars/avatar-jie-yan-song.png',
   authorName = 'Jie Yan Song',
   category,
-  cover = '/assets/covers/business-2-4x4-large.png',
   publishedAt = Date.now(),
   readTime,
   shortDescription,
@@ -55,9 +56,21 @@ export const PostCard: FC<PostCardProps> = ({
       <CardMedia
         component={RouterLink}
         href={`/blog/${id}`}
-        image={cover}
         sx={{ height: 280 }}
-      />
+      >
+        <Box
+          component='img'
+          src={`${apiUrl}/file/post-cover-${id}`}
+          crossOrigin='anonymous'
+          alt='cover'
+          sx={{
+            width: '100%',
+            objectPosition: 'center',
+            objectFit: 'cover',
+            height: '100%',
+          }}
+        />
+      </CardMedia>
       <CardContent>
         <Box sx={{ mb: 2 }}>
           <Chip label={category} />

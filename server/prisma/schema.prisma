@@ -14,7 +14,6 @@ model Post {
   id          String    @id @default(cuid())
   category    String
   content     String?
-  cover       String?
   publishedAt DateTime  @default(now())
   description String
   title       String
