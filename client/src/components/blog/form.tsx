@@ -10,7 +10,8 @@ import {
   Typography,
 } from '@mui/material';
 
-import { RichTextEditor, RouterLink } from '@/components/common';
+import { RouterLink } from '@/components/common';
+import { RichTextEditor } from '@/components/rich-text-editor';
 import { useRichTextEditor } from '@/hooks/use-rich-text';
 
 type PostFormProps =
