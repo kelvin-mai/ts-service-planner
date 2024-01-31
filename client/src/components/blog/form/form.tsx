@@ -132,7 +132,7 @@ export const PostForm: FC<PostFormProps> = ({ mode, post, onSubmit, onDelete }) 
             />
           </Stack>
         </FieldGroup>
-        <FieldGroup label='content'>
+        <FieldGroup label='Content'>
           <RichTextEditor editor={editor} />
         </FieldGroup>
       </Stack>
