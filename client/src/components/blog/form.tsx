@@ -41,7 +41,7 @@ export const PostForm: FC<PostFormProps> = ({ mode, post, onSubmit, onDelete }) 
   const [data, setData] = useState(post);
   const [pending, setPending] = useState(false);
   const navigate = useNavigate();
-  const { editor, getContent } = useRichTextEditor(post.content);
+  const { editor, getContent } = useRichTextEditor(post?.content || '');
   const to = mode === 'create' ? '/blog' : `/blog/${post.id}`;
 
   const [cover, setCover] = useState<string | null>('/assets/covers/abstract-1-4x3-large.png');
