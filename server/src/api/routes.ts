@@ -1,7 +1,7 @@
 import express from 'express';
 import multer, { memoryStorage } from 'multer';
 
-import { deleteFile, getFileURL, uploadFile } from '../lib/minio';
+import { deleteFile, getFileURL, uploadFile } from '@/lib/minio';
 import { getPosts, getPost, createPost, updatePost, deletePost } from './post/handler';
 import { deleteComment, getComments } from './comment/handler';
 

@@ -7,6 +7,12 @@
       "esnext"
     ],
     "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    },
   },
   "exclude": [
     "node_modules"

@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node src/index.ts",
+    "dev": "ts-node -r tsconfig-paths/register src/index.ts",
     "lint": "eslint . --ext ts --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write \"**/*.{js,ts,json}\" --cache",
-    "seed": "ts-node src/seed.ts"
+    "seed": "ts-node tsconfig-paths/register src/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "5.7.1",
@@ -27,6 +27,7 @@
     "prettier": "^3.2.4",
     "prisma": "5.7.1",
     "ts-node": "10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "5.3.3"
   }
 }

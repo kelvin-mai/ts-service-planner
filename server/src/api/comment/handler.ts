@@ -1,6 +1,6 @@
 import type { RequestHandler } from 'express';
 
-import { prisma } from '../../lib/prisma';
+import { prisma } from '@/lib/prisma';
 
 export const getComments: RequestHandler = async (req, res) => {
   const comments = await prisma.comment.findMany({
