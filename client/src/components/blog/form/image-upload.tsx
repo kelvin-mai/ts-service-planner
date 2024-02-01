@@ -66,7 +66,16 @@ export const ImageUpload: FC<ImageUploadProps> = ({ file, setFile }) => {
   return (
     <>
       {file ? (
-        <ImagePreview file={file} />
+        <>
+          <ImagePreview file={file} />
+          <Button
+            variant='contained'
+            color='inherit'
+            onClick={() => setFile(null)}
+          >
+            Remove photo
+          </Button>
+        </>
       ) : (
         <Box
           sx={{
@@ -100,15 +109,6 @@ export const ImageUpload: FC<ImageUploadProps> = ({ file, setFile }) => {
           </Typography>
         </Box>
       )}
-      <div>
-        <Button
-          color='inherit'
-          disabled={!file}
-          onClick={() => setFile(null)}
-        >
-          Remove photo
-        </Button>
-      </div>
       <FileUploader
         accept={{ 'image/*': [] }}
         maxFiles={1}

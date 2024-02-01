@@ -1,7 +1,7 @@
-import { Box, Container, Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
 
-import { Breadcrumbs, type BreadcrumbLink } from '@/components/common';
+import { Breadcrumbs, type BreadcrumbLink, Seo } from '@/components/common';
 import { PostForm } from '@/components/blog';
 import { createPost } from '@/api/post';
 import { apiClient } from '@/api';
@@ -18,23 +18,19 @@ export const Component = () => {
   ];
 
   return (
-    <Box
-      component='main'
-      sx={{ flexGrow: 1, py: 8 }}
-    >
-      <Container>
-        <Stack spacing={1}>
-          <Typography variant='h3'>Create a new Post</Typography>
-          <Breadcrumbs
-            links={breadcrumbs}
-            current='New'
-          />
-        </Stack>
-        <PostForm
-          mode='create'
-          onSubmit={mutation.mutate}
+    <>
+      <Seo title='Create a new Post' />
+      <Stack spacing={1}>
+        <Typography variant='h3'>Create a new Post</Typography>
+        <Breadcrumbs
+          links={breadcrumbs}
+          current='New'
         />
-      </Container>
-    </Box>
+      </Stack>
+      <PostForm
+        mode='create'
+        onSubmit={mutation.mutate}
+      />
+    </>
   );
 };

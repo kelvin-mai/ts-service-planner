@@ -1,34 +1,37 @@
 import { useState, type FC, type FormEvent } from 'react';
 import { useNavigate } from 'react-router';
-import { Button, Card, Stack, TextField, Typography } from '@mui/material';
+import { Button, Card, Skeleton, Stack, TextField, Typography } from '@mui/material';
 
 import { RichTextEditor, RouterLink } from '@/components/common';
 import { useRichTextEditor } from '@/hooks/use-rich-text';
 import { FieldGroup } from './fieldgroup';
 import { ImageUpload } from './image-upload';
 import { deleteFile, uploadFile } from '@/api/file';
+import { Post } from '@/api/post';
 
-type PostFormProps =
+type PostFormProps = {
+  post?: Post;
+  onSubmit: any;
+  disabled?: boolean;
+} & (
   | {
       mode: 'create';
-      post?: any;
-      onSubmit: any;
       onDelete?: any;
     }
   | {
       mode: 'edit';
-      post: any;
-      onSubmit: any;
       onDelete: any;
-    };
+    }
+);
 
-export const PostForm: FC<PostFormProps> = ({ mode, post, onSubmit, onDelete }) => {
-  const [data, setData] = useState(post);
+export const PostForm: FC<PostFormProps> = ({ mode, post, disabled, onSubmit, onDelete }) => {
+  const [data, setData] = useState<any>(post || {});
   const [cover, setCover] = useState<Blob | null>(null);
   const [pending, setPending] = useState(false);
   const navigate = useNavigate();
   const { editor, getContent } = useRichTextEditor(post?.content || '');
-  const to = mode === 'create' ? '/blog' : `/blog/${post.id}`;
+  const to = mode === 'create' ? '/blog' : `/blog/${post?.id}`;
+  const filename = `post-cover-${post?.id}`;
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -36,7 +39,7 @@ export const PostForm: FC<PostFormProps> = ({ mode, post, onSubmit, onDelete }) 
     onSubmit({ ...data, content: getContent() });
 
     if (cover) {
-      await uploadFile(`post-cover-${post.id}`, cover);
+      await uploadFile(filename, cover);
     }
     navigate(to);
   };
@@ -45,7 +48,7 @@ export const PostForm: FC<PostFormProps> = ({ mode, post, onSubmit, onDelete }) 
     if (mode === 'edit') {
       setPending(true);
       onDelete();
-      deleteFile(`post-cover-${post.id}`);
+      deleteFile(filename);
       navigate(`/blog`);
     }
   };
@@ -84,7 +87,7 @@ export const PostForm: FC<PostFormProps> = ({ mode, post, onSubmit, onDelete }) 
               variant='contained'
               color='secondary'
               onClick={handleDelete}
-              disabled={pending}
+              disabled={disabled || pending}
             >
               Delete
             </Button>
@@ -92,7 +95,7 @@ export const PostForm: FC<PostFormProps> = ({ mode, post, onSubmit, onDelete }) 
           <Button
             variant='contained'
             type='submit'
-            disabled={pending}
+            disabled={disabled || pending}
           >
             Publish
           </Button>
@@ -107,6 +110,7 @@ export const PostForm: FC<PostFormProps> = ({ mode, post, onSubmit, onDelete }) 
               name='title'
               onChange={(e) => setData({ ...data, title: e.target.value })}
               value={data?.title || ''}
+              disabled={disabled}
             />
             <TextField
               fullWidth
@@ -114,6 +118,7 @@ export const PostForm: FC<PostFormProps> = ({ mode, post, onSubmit, onDelete }) 
               name='description'
               onChange={(e) => setData({ ...data, description: e.target.value })}
               value={data?.description || ''}
+              disabled={disabled}
             />
             <TextField
               fullWidth
@@ -121,19 +126,24 @@ export const PostForm: FC<PostFormProps> = ({ mode, post, onSubmit, onDelete }) 
               name='category'
               value={data?.category || ''}
               onChange={(e) => setData({ ...data, category: e.target.value })}
+              disabled={disabled}
             />
           </Stack>
         </FieldGroup>
         <FieldGroup label='Post cover'>
           <Stack spacing={3}>
-            <ImageUpload
-              file={cover}
-              setFile={setCover}
-            />
+            {disabled ? (
+              <Skeleton height={200} />
+            ) : (
+              <ImageUpload
+                file={cover}
+                setFile={setCover}
+              />
+            )}
           </Stack>
         </FieldGroup>
         <FieldGroup label='Content'>
-          <RichTextEditor editor={editor} />
+          {disabled ? <Skeleton height={200} /> : <RichTextEditor editor={editor} />}
         </FieldGroup>
       </Stack>
     </form>

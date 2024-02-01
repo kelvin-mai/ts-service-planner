@@ -1,14 +1,12 @@
 import { format, subHours } from 'date-fns';
-import { Box, Button, Card, Chip, Container, Divider, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, Chip, Container, Skeleton, Stack, Typography } from '@mui/material';
 import { json, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 
 import { RouterLink, Seo, Breadcrumbs, type BreadcrumbLink } from '@/components/common';
-import { PostNewsletter, PostContent } from '@/components/blog';
+import { PostContent } from '@/components/blog';
 import { fetchPost, type Post } from '@/api/post';
-
-const baseUrl = 'http://localhost:8080';
-const apiUrl = `${baseUrl}/api`;
+import { getApiUrl } from '@/utils/url';
 
 export const Component = () => {
   const { id } = useParams();
@@ -27,48 +25,47 @@ export const Component = () => {
     { href: '/blog', title: 'Blog' },
   ];
 
-  return isPending ? (
-    <>loading...</>
-  ) : (
+  return (
     <>
-      <Seo title='Blog: Post Details' />
-      <Box
-        component='main'
+      <Seo title={data?.post.title || 'Post Details'} />
+      <Stack spacing={1}>
+        <Typography variant='h3'>Post</Typography>
+        <Breadcrumbs
+          links={breadcrumbs}
+          current={data?.post.title || 'Post'}
+        />
+      </Stack>
+      <Card
+        elevation={16}
         sx={{
-          flexGrow: 1,
-          py: 8,
+          alignItems: 'center',
+          borderRadius: 1,
+          display: 'flex',
+          justifyContent: 'space-between',
+          mb: 8,
+          mt: 6,
+          px: 3,
+          py: 2,
         }}
       >
-        <Container maxWidth='xl'>
-          <Stack spacing={1}>
-            <Typography variant='h3'>Post</Typography>
-            <Breadcrumbs
-              links={breadcrumbs}
-              current={data.post.title}
-            />
-          </Stack>
-          <Card
-            elevation={16}
-            sx={{
-              alignItems: 'center',
-              borderRadius: 1,
-              display: 'flex',
-              justifyContent: 'space-between',
-              mb: 8,
-              mt: 6,
-              px: 3,
-              py: 2,
-            }}
-          >
-            <Typography variant='subtitle1'>Hello, Admin</Typography>
-            <Button
-              component={RouterLink}
-              href={`/blog/${data.post.id}/edit`}
-              variant='contained'
-            >
-              Edit Post
-            </Button>
-          </Card>
+        <Typography variant='subtitle1'>Hello, Admin</Typography>
+        <Button
+          component={RouterLink}
+          href={`/blog/${data?.post.id}/edit`}
+          variant='contained'
+          disabled={isPending}
+        >
+          Edit Post
+        </Button>
+      </Card>
+      {isPending ? (
+        <Stack spacing={3}>
+          <Skeleton height={40} />
+          <Skeleton height={25} />
+          <Skeleton height={400} />
+        </Stack>
+      ) : (
+        <>
           <Stack spacing={3}>
             <div>
               <Chip label={data.post.category} />
@@ -102,7 +99,7 @@ export const Component = () => {
           </Stack>
           <Box
             component='img'
-            src={`${apiUrl}/file/post-cover-${id}`}
+            src={`${getApiUrl()}/file/post-cover-${id}`}
             crossOrigin='anonymous'
             alt='cover'
             sx={{
@@ -119,12 +116,8 @@ export const Component = () => {
               <PostContent content={data.post.content} />
             </Container>
           )}
-          <Divider sx={{ my: 3 }} />
-          <Box sx={{ mt: 8 }}>
-            <PostNewsletter />
-          </Box>
-        </Container>
-      </Box>
+        </>
+      )}
     </>
   );
 };
