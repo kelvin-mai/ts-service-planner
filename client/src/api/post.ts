@@ -19,8 +19,8 @@ export type Post = Omit<PostDTO, 'cover'> & {
   publishedAt: string;
 };
 
-export const fetchPosts = async () => {
-  const res = await fetch(`${apiUrl}/post`);
+export const fetchPosts = async (page: number) => {
+  const res = await fetch(`${apiUrl}/post?page=${page}`);
   return await res.json();
 };
 

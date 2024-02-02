@@ -3,10 +3,15 @@ import type { RequestHandler } from 'express';
 import { prisma } from '@/lib/prisma';
 
 export const getPosts: RequestHandler = async (req, res) => {
+  const page = parseInt((req.query.page as string) || '1') - 1;
   const posts = await prisma.post.findMany({
+    take: 4,
+    skip: page * 4,
     orderBy: { publishedAt: 'desc' },
   });
-  return res.json({ posts });
+  const total = await prisma.post.count();
+  const hasNext = total > page * 4 + 4;
+  return res.json({ posts, hasNext });
 };
 
 export const createPost: RequestHandler = async (req, res) => {

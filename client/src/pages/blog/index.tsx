@@ -1,3 +1,5 @@
+import { json } from 'react-router';
+import { createSearchParams, useSearchParams } from 'react-router-dom';
 import {
   Button,
   Card,
@@ -14,7 +16,6 @@ import { useQuery } from '@tanstack/react-query';
 import { RouterLink, Seo, Breadcrumbs, type BreadcrumbLink } from '@/components/common';
 import { PostCard } from '@/components/blog';
 import { Post, fetchPosts } from '@/api/post';
-import { json } from 'react-router';
 
 const PendingSkeleton = () => (
   <Grid
@@ -29,14 +30,28 @@ const PendingSkeleton = () => (
 );
 
 export const Component = () => {
-  const { data, isPending, isError } = useQuery<{ posts: Post[] }>({
-    queryKey: ['posts'],
-    queryFn: fetchPosts,
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageParam = searchParams.get('page');
+  const page = pageParam ? parseInt(pageParam) : 1;
+  const { data, isPending, isError } = useQuery<{ posts: Post[]; hasNext: boolean }>({
+    queryKey: ['posts', page],
+    queryFn: () => fetchPosts(page),
   });
   const breadcrumbs: BreadcrumbLink[] = [{ href: '/', title: 'Home' }];
   if (isError) {
     throw json({}, { status: 500 });
   }
+  const setPage = (direction: 'next' | 'prev') => {
+    if (page) {
+      if (direction === 'next') {
+        setSearchParams(createSearchParams({ page: (page + 1).toString() }));
+      } else if (direction === 'prev') {
+        setSearchParams(createSearchParams({ page: (page - 1).toString() }));
+      }
+    } else {
+      setSearchParams(createSearchParams({ page: '2' }));
+    }
+  };
   return (
     <>
       <Seo title='Blog: Post List' />
@@ -126,21 +141,24 @@ export const Component = () => {
         }}
       >
         <Button
-          disabled
+          disabled={isPending || page === 1}
           startIcon={
             <SvgIcon>
               <ArrowLeft />
             </SvgIcon>
           }
+          onClick={() => setPage('prev')}
         >
           Newer
         </Button>
         <Button
+          disabled={isPending || !data.hasNext}
           endIcon={
             <SvgIcon>
               <ArrowRight />
             </SvgIcon>
           }
+          onClick={() => setPage('next')}
         >
           Older posts
         </Button>
