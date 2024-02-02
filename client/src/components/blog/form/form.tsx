@@ -6,7 +6,6 @@ import { RichTextEditor, RouterLink } from '@/components/common';
 import { useRichTextEditor } from '@/hooks/use-rich-text';
 import { FieldGroup } from './fieldgroup';
 import { ImageUpload } from './image-upload';
-import { deleteFile, uploadFile } from '@/api/file';
 import { Post } from '@/api/post';
 
 type PostFormProps = {
@@ -31,16 +30,11 @@ export const PostForm: FC<PostFormProps> = ({ mode, post, disabled, onSubmit, on
   const navigate = useNavigate();
   const { editor, getContent } = useRichTextEditor(post?.content || '');
   const to = mode === 'create' ? '/blog' : `/blog/${post?.id}`;
-  const filename = `post-cover-${post?.id}`;
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setPending(true);
-    onSubmit({ ...data, content: getContent() });
-
-    if (cover) {
-      await uploadFile(filename, cover);
-    }
+    onSubmit({ ...data, content: getContent(), cover });
     navigate(to);
   };
 
@@ -48,7 +42,6 @@ export const PostForm: FC<PostFormProps> = ({ mode, post, disabled, onSubmit, on
     if (mode === 'edit') {
       setPending(true);
       onDelete();
-      deleteFile(filename);
       navigate(`/blog`);
     }
   };
