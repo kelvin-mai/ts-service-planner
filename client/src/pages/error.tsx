@@ -8,10 +8,11 @@ export const ErrorPage: FC = () => {
   const error = useRouteError();
   const mdUp = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const status = isRouteErrorResponse(error) ? error.statusText : 'Unknown Error';
+  console.log({ routerError: error });
 
   return (
     <>
-      <Seo title={`Error: ${status}`} />
+      <Seo title={`${status}`} />
       <Box
         component='main'
         sx={{

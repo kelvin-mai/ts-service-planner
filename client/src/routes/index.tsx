@@ -1,6 +1,8 @@
 import { Outlet, createBrowserRouter } from 'react-router-dom';
 
 import { ErrorPage } from '@/pages/error';
+
+import { AuthLayout } from '@/components/auth';
 import { BlogLayout } from '@/components/blog';
 
 export const router = createBrowserRouter([
@@ -15,6 +17,18 @@ export const router = createBrowserRouter([
       {
         path: '/pricing',
         lazy: () => import('@/pages/pricing'),
+      },
+      {
+        path: '/auth/',
+        element: (
+          <AuthLayout>
+            <Outlet />
+          </AuthLayout>
+        ),
+        children: [
+          { path: 'login', lazy: () => import('@/pages/auth/login') },
+          { path: 'register', lazy: () => import('@/pages/auth/register') },
+        ],
       },
       {
         path: '/blog/',

@@ -54,7 +54,7 @@ export const Component = () => {
   };
   return (
     <>
-      <Seo title='Blog: Post List' />
+      <Seo title='Blog' />
       <Stack spacing={1}>
         <Typography variant='h3'>Blog</Typography>
         <Breadcrumbs
