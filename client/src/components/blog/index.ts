@@ -1,3 +1,4 @@
+export * from './actions';
 export * from './card';
 export * from './comment';
 export * from './comment-add';

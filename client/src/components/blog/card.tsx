@@ -14,9 +14,7 @@ import {
 } from '@mui/material';
 
 import { RouterLink } from '@/components/common';
-
-const baseUrl = 'http://localhost:8080';
-const apiUrl = `${baseUrl}/api`;
+import { useImageUrl } from '@/hooks';
 
 type PostCardProps = {
   id: string;
@@ -42,6 +40,7 @@ export const PostCard: FC<PostCardProps> = ({
   ...props
 }) => {
   const formattedPublishedAt = format(publishedAt, 'MMM d, yyyy');
+  const cover = useImageUrl('posts', `cover-${id}`);
 
   const getInitials = (name = ''): string =>
     name
@@ -60,7 +59,7 @@ export const PostCard: FC<PostCardProps> = ({
       >
         <Box
           component='img'
-          src={`${apiUrl}/file/post-cover-${id}`}
+          src={cover}
           crossOrigin='anonymous'
           alt='cover'
           sx={{

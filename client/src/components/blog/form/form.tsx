@@ -1,11 +1,13 @@
-import { useState, type FC, type FormEvent } from 'react';
-import { useNavigate } from 'react-router';
-import { Button, Card, Skeleton, Stack, TextField, Typography } from '@mui/material';
+import { useState, type FC } from 'react';
+import { redirect, useNavigate } from 'react-router';
+import { useForm, type SubmitHandler } from 'react-hook-form';
+import { Button, Skeleton, Stack, TextField } from '@mui/material';
 
 import { FieldGroup, RichTextEditor, RouterLink } from '@/components/common';
-import { useRichTextEditor } from '@/hooks/use-rich-text';
-import { ImageUpload } from './image-upload';
+import { useAuth, useRichTextEditor } from '@/hooks';
 import { Post } from '@/api/post';
+import { ImageUpload } from './image-upload';
+import { BlogActions } from '../actions';
 
 type PostFormProps = {
   post?: Post;
@@ -22,18 +24,27 @@ type PostFormProps = {
     }
 );
 
+type PostFieldValues = {
+  title: string;
+  description: string;
+  category: string;
+};
+
 export const PostForm: FC<PostFormProps> = ({ mode, post, disabled, onSubmit, onDelete }) => {
-  const [data, setData] = useState<any>(post || {});
+  const { register, handleSubmit } = useForm<PostFieldValues>();
+  const { user } = useAuth();
+  if (!user) {
+    redirect('/blog');
+  }
   const [cover, setCover] = useState<Blob | null>(null);
   const [pending, setPending] = useState(false);
   const navigate = useNavigate();
   const { editor, getContent } = useRichTextEditor(post?.content || '');
   const to = mode === 'create' ? '/blog' : `/blog/${post?.id}`;
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const submitFn: SubmitHandler<PostFieldValues> = async (data) => {
     setPending(true);
-    onSubmit({ ...data, content: getContent(), cover });
+    onSubmit({ ...data, cover, author: user?.id, content: getContent() });
     navigate(to);
   };
 
@@ -46,21 +57,8 @@ export const PostForm: FC<PostFormProps> = ({ mode, post, disabled, onSubmit, on
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Card
-        elevation={16}
-        sx={{
-          alignItems: 'center',
-          borderRadius: 1,
-          display: 'flex',
-          justifyContent: 'space-between',
-          mb: 8,
-          mt: 6,
-          px: 3,
-          py: 2,
-        }}
-      >
-        <Typography variant='subtitle1'>Hello, Admin</Typography>
+    <form onSubmit={handleSubmit(submitFn)}>
+      <BlogActions>
         <Stack
           alignItems='center'
           direction='row'
@@ -92,33 +90,27 @@ export const PostForm: FC<PostFormProps> = ({ mode, post, disabled, onSubmit, on
             Publish
           </Button>
         </Stack>
-      </Card>
+      </BlogActions>
       <Stack spacing={3}>
         <FieldGroup label='Basic details'>
           <Stack spacing={3}>
             <TextField
               fullWidth
               label='Post title'
-              name='title'
-              onChange={(e) => setData({ ...data, title: e.target.value })}
-              value={data?.title || ''}
               disabled={disabled}
+              {...register('title', { value: post?.title })}
             />
             <TextField
               fullWidth
               label='Short description'
-              name='description'
-              onChange={(e) => setData({ ...data, description: e.target.value })}
-              value={data?.description || ''}
               disabled={disabled}
+              {...register('description', { value: post?.description })}
             />
             <TextField
               fullWidth
               label='Category'
-              name='category'
-              value={data?.category || ''}
-              onChange={(e) => setData({ ...data, category: e.target.value })}
               disabled={disabled}
+              {...register('category', { value: post?.category })}
             />
           </Stack>
         </FieldGroup>

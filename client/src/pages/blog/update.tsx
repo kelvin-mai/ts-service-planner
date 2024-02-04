@@ -1,10 +1,10 @@
 import { useParams, json } from 'react-router';
-import { Skeleton, Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
 import { Breadcrumbs, type BreadcrumbLink, Seo } from '@/components/common';
 import { PostForm } from '@/components/blog';
-import { Post, deletePost, fetchPost, updatePost } from '@/api/post';
+import { type Post, type PostDTO, deletePost, fetchPost, updatePost } from '@/api/post';
 import { apiClient } from '@/api';
 
 export const Component = () => {
@@ -15,7 +15,7 @@ export const Component = () => {
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data) => updatePost(id!, data),
+    mutationFn: (data: PostDTO) => updatePost(id!, data),
     onSuccess: () => apiClient.invalidateQueries({ queryKey: ['posts', id] }),
   });
 

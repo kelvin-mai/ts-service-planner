@@ -1,15 +1,10 @@
-import { toast } from 'react-hot-toast';
+import { supabase } from './index';
 
-import { getApiUrl } from '@/utils/url';
-import { uploadFile, deleteFile } from './file';
-
-const apiUrl = getApiUrl();
-
-type PostDTO = {
+export type PostDTO = {
   title: string;
   description: string;
   category: string;
-  content?: string;
+  content: string;
   cover?: Blob;
 };
 
@@ -20,51 +15,59 @@ export type Post = Omit<PostDTO, 'cover'> & {
 };
 
 export const fetchPosts = async (page: number) => {
-  const res = await fetch(`${apiUrl}/post?page=${page}`);
-  return await res.json();
+  const from = page ? (page - 1) * 4 : 0;
+  const to = from + 4;
+  const { data, count, error } = await supabase
+    .from('posts')
+    .select('*', { count: 'exact' })
+    .range(from, to);
+  if (error) {
+    throw error;
+  }
+  return { posts: data || [], hasNext: (count || 0) > to };
 };
 
 export const fetchPost = async (id: string) => {
-  const res = await fetch(`${apiUrl}/post/${id}`);
-  return await res.json();
+  const { data, error } = await supabase.from('posts').select().match({ id }).single();
+  if (error) {
+    throw error;
+  }
+  return { post: data };
 };
 
-export const createPost = async (body: PostDTO) => {
-  const res = await fetch(`${apiUrl}/post`, {
-    body: JSON.stringify(body),
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-  });
-  const data = await res.json();
-  if (body.cover) {
-    const filename = `post-cover-${(data.post as Post).id}`;
-    await uploadFile(filename, body.cover);
+export const createPost = async ({ cover, ...body }: PostDTO) => {
+  const { data, error } = await supabase.from('posts').insert(body).select().single();
+  if (error) {
+    throw error;
   }
-  toast.success('Successfully created post');
+
+  if (cover) {
+    const { error } = await supabase.storage.from('posts').upload(`cover-${data.id}`, cover);
+    if (error) {
+      throw error;
+    }
+  }
   return data;
 };
 
-export const updatePost = async (id: string, body: any) => {
-  const res = await fetch(`${apiUrl}/post/${id}`, {
-    body: JSON.stringify(body),
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-  });
-  const data = await res.json();
-  if (body.cover) {
-    const filename = `post-cover-${(data.post as Post).id}`;
-    await uploadFile(filename, body.cover);
+export const updatePost = async (id: string, { cover, ...body }: PostDTO) => {
+  const { data, error } = await supabase.from('posts').update(body).match({ id }).select().single();
+  if (error) {
+    throw error;
   }
-  toast.success('Successfully updated post');
+  if (cover) {
+    const { error } = await supabase.storage.from('posts').upload(`cover-${data.id}`, cover);
+    if (error) {
+      throw error;
+    }
+  }
   return data;
 };
 
 export const deletePost = async (id: string) => {
-  const res = await fetch(`${apiUrl}/post/${id}`, {
-    method: 'DELETE',
-  });
-  const filename = `post-cover-${id}`;
-  await deleteFile(filename);
-  toast.success('Successfully deleted post');
-  return await res.json();
+  const { data, error } = await supabase.from('posts').delete().match({ id }).select().single();
+  if (error) {
+    throw error;
+  }
+  return data;
 };

@@ -2,7 +2,6 @@ import { json } from 'react-router';
 import { createSearchParams, useSearchParams } from 'react-router-dom';
 import {
   Button,
-  Card,
   Divider,
   Unstable_Grid2 as Grid,
   Skeleton,
@@ -14,8 +13,8 @@ import { ArrowLeft, ArrowRight } from '@untitled-ui/icons-react';
 import { useQuery } from '@tanstack/react-query';
 
 import { RouterLink, Seo, Breadcrumbs, type BreadcrumbLink } from '@/components/common';
-import { PostCard } from '@/components/blog';
-import { Post, fetchPosts } from '@/api/post';
+import { BlogActions, PostCard } from '@/components/blog';
+import { fetchPosts } from '@/api/post';
 
 const PendingSkeleton = () => (
   <Grid
@@ -33,7 +32,7 @@ export const Component = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const pageParam = searchParams.get('page');
   const page = pageParam ? parseInt(pageParam) : 1;
-  const { data, isPending, isError } = useQuery<{ posts: Post[]; hasNext: boolean }>({
+  const { data, isPending, isError } = useQuery<{ posts: any[]; hasNext: boolean }>({
     queryKey: ['posts', page],
     queryFn: () => fetchPosts(page),
   });
@@ -52,6 +51,7 @@ export const Component = () => {
       setSearchParams(createSearchParams({ page: '2' }));
     }
   };
+
   return (
     <>
       <Seo title='Blog' />
@@ -62,20 +62,7 @@ export const Component = () => {
           current='Blog'
         />
       </Stack>
-      <Card
-        elevation={16}
-        sx={{
-          alignItems: 'center',
-          borderRadius: 1,
-          display: 'flex',
-          justifyContent: 'space-between',
-          mb: 8,
-          mt: 6,
-          px: 3,
-          py: 2,
-        }}
-      >
-        <Typography variant='subtitle1'>Hello, Admin</Typography>
+      <BlogActions>
         <Button
           component={RouterLink}
           href='/blog/new'
@@ -83,8 +70,13 @@ export const Component = () => {
         >
           New Post
         </Button>
-      </Card>
-      <Typography variant='h4'>Recent Articles</Typography>
+      </BlogActions>
+      <Typography
+        variant='h4'
+        sx={{ mt: 6 }}
+      >
+        Recent Articles
+      </Typography>
       <Typography
         color='text.secondary'
         sx={{ mt: 2 }}

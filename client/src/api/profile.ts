@@ -5,7 +5,10 @@ export type ProfileDTO = {
   avatar?: Blob;
 };
 
-export const getProfile = async (id: string) => {
+export const getProfile = async (id?: string) => {
+  if (!id) {
+    return null;
+  }
   const { data, error } = await supabase.from('profiles').select().eq('id', id).single();
   if (error) {
     console.log(error);

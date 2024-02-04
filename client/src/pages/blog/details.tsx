@@ -1,4 +1,3 @@
-import { format, subHours } from 'date-fns';
 import { Box, Button, Card, Chip, Container, Skeleton, Stack, Typography } from '@mui/material';
 import { json, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
@@ -6,17 +5,22 @@ import { useQuery } from '@tanstack/react-query';
 import { RouterLink, Seo, Breadcrumbs, type BreadcrumbLink } from '@/components/common';
 import { PostContent } from '@/components/blog';
 import { fetchPost, type Post } from '@/api/post';
-import { getApiUrl } from '@/utils/url';
+import { useImageUrl } from '@/hooks';
 
 export const Component = () => {
   const { id } = useParams();
-  const { data, isPending, isError } = useQuery<{ post: Post }>({
+  if (!id) {
+    throw json({}, { status: 404 });
+  }
+  const { data, isPending, isError } = useQuery<{ post: any }>({
     queryKey: ['posts', id],
-    queryFn: () => fetchPost(id!),
+    queryFn: () => fetchPost(id),
   });
   if (isError) {
     throw json({}, { status: 404 });
   }
+
+  const coverUrl = useImageUrl('posts', `cover-${id}`);
 
   // const publishedAt = format(post.publishedAt, 'MMMM d, yyyy');
 
@@ -99,7 +103,7 @@ export const Component = () => {
           </Stack>
           <Box
             component='img'
-            src={`${getApiUrl()}/file/post-cover-${id}`}
+            src={coverUrl || ''}
             crossOrigin='anonymous'
             alt='cover'
             sx={{
