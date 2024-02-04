@@ -1,8 +1,7 @@
 import type { FC, PropsWithChildren } from 'react';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Stack from '@mui/material/Stack';
+import { Box, Container, Link, Stack, SvgIcon, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { ArrowLeft } from '@untitled-ui/icons-react';
 
 import { Logo, RouterLink } from '@/components/common';
 
@@ -90,6 +89,23 @@ export const AuthLayout: FC<PropsWithChildren> = ({ children }) => {
             },
           }}
         >
+          <Box sx={{ mb: 4 }}>
+            <Link
+              color='text.primary'
+              component={RouterLink}
+              href='/'
+              sx={{
+                alignItems: 'center',
+                display: 'inline-flex',
+              }}
+              underline='hover'
+            >
+              <SvgIcon sx={{ mr: 1 }}>
+                <ArrowLeft />
+              </SvgIcon>
+              <Typography variant='subtitle2'>Home</Typography>
+            </Link>
+          </Box>
           {children}
         </Container>
       </Box>

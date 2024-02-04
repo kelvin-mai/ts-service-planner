@@ -2,9 +2,8 @@ import { useState, type FC, type FormEvent } from 'react';
 import { useNavigate } from 'react-router';
 import { Button, Card, Skeleton, Stack, TextField, Typography } from '@mui/material';
 
-import { RichTextEditor, RouterLink } from '@/components/common';
+import { FieldGroup, RichTextEditor, RouterLink } from '@/components/common';
 import { useRichTextEditor } from '@/hooks/use-rich-text';
-import { FieldGroup } from './fieldgroup';
 import { ImageUpload } from './image-upload';
 import { Post } from '@/api/post';
 

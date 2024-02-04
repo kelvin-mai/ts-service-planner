@@ -1,46 +1,37 @@
 import { type FC, useState } from 'react';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 import { Box, Button, Link, Stack, TextField } from '@mui/material';
 
-import { supabase } from '@/api';
+import { signIn, signUp, type AuthCredentials } from '@/api/auth';
 import { RouterLink } from '@/components/common';
 
 type AuthFormProps = {
-  submitText: string;
+  authType: 'login' | 'register';
 };
 
-export const AuthForm: FC<AuthFormProps> = ({ submitText }) => {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+export const AuthForm: FC<AuthFormProps> = ({ authType }) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const handleLogin = async (e: any) => {
-    e.preventDefault();
+  const { register, handleSubmit } = useForm<AuthCredentials>();
+  const handleLogin: SubmitHandler<AuthCredentials> = async (data) => {
     setLoading(true);
-    // const res = await supabase.auth.signUp({ email, password });
-    const res = await supabase.auth.signInWithPassword({ email, password });
-    if (res.error) {
-      const { error } = res;
-      console.log(error);
-    }
+    const authenticate = authType === 'login' ? signIn : signUp;
+    await authenticate(data);
     setLoading(false);
   };
   return (
-    <form onSubmit={handleLogin}>
+    <form onSubmit={handleSubmit(handleLogin)}>
       <Stack spacing={3}>
         <TextField
           fullWidth
           label='Email address'
-          name='email'
           type='email'
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          {...register('email')}
         />
         <TextField
           fullWidth
           label='Password'
-          name='password'
           type='password'
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          {...register('password')}
         />
         <Button
           fullWidth
@@ -50,7 +41,7 @@ export const AuthForm: FC<AuthFormProps> = ({ submitText }) => {
           variant='contained'
           disabled={loading}
         >
-          {submitText}
+          {authType === 'login' ? 'Log in' : 'Register'}
         </Button>
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
           <Link

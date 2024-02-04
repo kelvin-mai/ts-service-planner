@@ -1,6 +1,7 @@
 export * from './breadcrumbs';
 export * from './code';
 export * from './file-uploader/file-uploader';
+export * from './form/field-group';
 export * from './logo';
 export * from './seo';
 export * from './toaster';
