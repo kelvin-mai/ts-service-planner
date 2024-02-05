@@ -3,11 +3,10 @@ import { Stack, Typography } from '@mui/material';
 
 import { Breadcrumbs, type BreadcrumbLink, Seo } from '@/components/common';
 import { PostForm } from '@/components/blog';
+import { AuthGuard } from '@/components/auth';
 import { usePostsApi } from '@/api/hooks';
-import { useAuth } from '@/hooks';
 
 export const Component = () => {
-  useAuth({ guard: true });
   const { id } = useParams();
   if (!id) {
     throw json({}, { status: 404 });
@@ -15,6 +14,7 @@ export const Component = () => {
 
   const { getPostQuery, getUpdateMutation, getDeleteMutation } = usePostsApi();
   const { data, isPending, isError } = getPostQuery(id);
+  // data?.post.author.id
   const updateMutation = getUpdateMutation(id);
   const deleteMutation = getDeleteMutation(id);
 
@@ -28,7 +28,10 @@ export const Component = () => {
   ];
 
   return (
-    <>
+    <AuthGuard
+      authorized
+      authorizeId={data?.post.author.id}
+    >
       <Seo title='Update this Post' />
       <Stack spacing={1}>
         <Typography variant='h2'>Update this Post</Typography>
@@ -44,6 +47,6 @@ export const Component = () => {
         onDelete={deleteMutation.mutate}
         disabled={isPending}
       />
-    </>
+    </AuthGuard>
   );
 };

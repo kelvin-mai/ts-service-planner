@@ -18,7 +18,6 @@ export const Component = () => {
     throw json({}, { status: 404 });
   }
   const authorized = isAuthorized(data?.post.author.id);
-  console.log({ authorized });
 
   const breadcrumbs: BreadcrumbLink[] = [
     { href: '/', title: 'Home' },

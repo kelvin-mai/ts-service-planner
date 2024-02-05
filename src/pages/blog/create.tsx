@@ -2,11 +2,10 @@ import { Stack, Typography } from '@mui/material';
 
 import { Breadcrumbs, type BreadcrumbLink, Seo } from '@/components/common';
 import { PostForm } from '@/components/blog';
+import { AuthGuard } from '@/components/auth';
 import { usePostsApi } from '@/api/hooks';
-import { useAuth } from '@/hooks';
 
 export const Component = () => {
-  useAuth({ guard: true });
   const { getCreateMutation } = usePostsApi();
   const createMutation = getCreateMutation();
 
@@ -16,7 +15,7 @@ export const Component = () => {
   ];
 
   return (
-    <>
+    <AuthGuard>
       <Seo title='Create a new Post' />
       <Stack spacing={1}>
         <Typography variant='h2'>Create a new Post</Typography>
@@ -29,6 +28,6 @@ export const Component = () => {
         mode='create'
         onSubmit={createMutation.mutate}
       />
-    </>
+    </AuthGuard>
   );
 };

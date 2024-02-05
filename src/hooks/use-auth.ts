@@ -1,5 +1,4 @@
-import { useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router';
+import { useContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import { AuthContext } from '@/context/auth';
@@ -22,7 +21,6 @@ type UseAuthObject = Session & { isAuthorized: (id?: string) => boolean } & (
   );
 
 export const useAuth = (options?: UseAuthOptions) => {
-  const navigate = useNavigate();
   const auth = useContext(AuthContext);
   const { data, isPending } = useQuery({
     queryKey: ['profile'],
@@ -35,12 +33,6 @@ export const useAuth = (options?: UseAuthOptions) => {
     }
     return auth?.user.id === id;
   };
-
-  useEffect(() => {
-    if (options?.guard && !isPending && !auth?.user) {
-      navigate('/auth/login', { replace: true });
-    }
-  }, [options, auth, isPending]);
 
   return {
     ...auth,

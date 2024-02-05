@@ -8,9 +8,10 @@ import { type BreadcrumbLink, Breadcrumbs, FieldGroup, Seo } from '@/components/
 import { AccountForm } from '@/components/account-form';
 import { type ProfileDTO, updateProfile } from '@/api/profile';
 import { apiClient } from '@/api';
+import { AuthGuard } from '@/components/auth';
 
 export const Component = () => {
-  const { user, profile, isPending } = useAuth({ guard: true });
+  const { user, profile, isPending } = useAuth();
   const updateMutation = useMutation({
     mutationFn: (data: ProfileDTO) => updateProfile(profile?.id!, data),
     onSuccess: () => {
@@ -26,7 +27,10 @@ export const Component = () => {
   }
   const breadcrumbs: BreadcrumbLink[] = [{ href: '/', title: 'Home' }];
   return (
-    <>
+    <AuthGuard
+      authorized
+      authorizeId={profile?.id}
+    >
       <Seo title='Account' />
       <Box
         component='main'
@@ -63,6 +67,6 @@ export const Component = () => {
           </Stack>
         </Container>
       </Box>
-    </>
+    </AuthGuard>
   );
 };
