@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { redirect, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { Button, Card, CardContent, CardHeader, TextField } from '@mui/material';
 
@@ -7,6 +7,7 @@ import { updatePassword } from '@/api/auth';
 import { useAuth } from '@/hooks';
 
 export const Component = () => {
+  useAuth({ guard: true });
   const [pending, setPending] = useState<boolean>(false);
   const { register, handleSubmit } = useForm<{ password: string }>();
   const navigate = useNavigate();

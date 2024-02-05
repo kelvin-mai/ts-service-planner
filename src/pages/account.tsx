@@ -1,21 +1,18 @@
-import { json, redirect } from 'react-router';
+import { json } from 'react-router';
 import toast from 'react-hot-toast';
 import { Box, Container, Skeleton, Stack, Typography } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
 
 import { useAuth } from '@/hooks';
-import { FieldGroup, Seo } from '@/components/common';
+import { type BreadcrumbLink, Breadcrumbs, FieldGroup, Seo } from '@/components/common';
 import { AccountForm } from '@/components/account-form';
 import { type ProfileDTO, updateProfile } from '@/api/profile';
 import { apiClient } from '@/api';
 
 export const Component = () => {
-  const { user, profile, isPending } = useAuth();
-  if (!user) {
-    return redirect('/auth/login');
-  }
+  const { user, profile, isPending } = useAuth({ guard: true });
   const updateMutation = useMutation({
-    mutationFn: (data: ProfileDTO) => updateProfile(profile.id, data),
+    mutationFn: (data: ProfileDTO) => updateProfile(profile?.id!, data),
     onSuccess: () => {
       apiClient.invalidateQueries({ queryKey: ['profile'] });
       toast.success('Successfully updated account');
@@ -27,6 +24,7 @@ export const Component = () => {
   if (updateMutation.isError) {
     throw json({}, { status: 500 });
   }
+  const breadcrumbs: BreadcrumbLink[] = [{ href: '/', title: 'Home' }];
   return (
     <>
       <Seo title='Account' />
@@ -42,7 +40,11 @@ export const Component = () => {
             spacing={3}
             sx={{ mb: 3 }}
           >
-            <Typography variant='h4'>Account</Typography>
+            <Typography variant='h2'>Account</Typography>
+            <Breadcrumbs
+              links={breadcrumbs}
+              current='Account'
+            />
           </Stack>
           <Stack spacing={4}>
             <FieldGroup label='Basic details'>
@@ -50,9 +52,9 @@ export const Component = () => {
                 <Skeleton height={400} />
               ) : (
                 <AccountForm
-                  id={profile.id}
-                  email={user.email}
-                  full_name={profile.full_name}
+                  id={profile?.id}
+                  email={user?.email}
+                  full_name={profile?.full_name || ''}
                   onSubmit={updateMutation.mutate}
                   disabled={updateMutation.isPending}
                 />

@@ -4,17 +4,17 @@ import { format, parseISO } from 'date-fns';
 
 import { useImageUrl } from '@/hooks';
 import { PostContent } from './content';
+import { contentToReadtime } from '@/utils/calc';
 
 type PostDetailsProps = {
   id: string;
   authorId: string;
-  authorName: string;
+  authorName: string | null;
   publishedAt: string;
   title: string;
   description: string;
   category: string;
   content: string;
-  readTime: number;
 };
 
 export const PostDetails: FC<PostDetailsProps> = ({
@@ -26,11 +26,11 @@ export const PostDetails: FC<PostDetailsProps> = ({
   category,
   authorName,
   content,
-  readTime,
 }) => {
   const coverUrl = useImageUrl('posts', `cover-${id}`);
   const avatar = useImageUrl('avatars', authorId);
   const formattedPublishedAt = format(parseISO(publishedAt), 'MMMM d, yyyy');
+  const readTime = contentToReadtime(content);
   return (
     <>
       <Stack spacing={3}>
@@ -53,7 +53,7 @@ export const PostDetails: FC<PostDetailsProps> = ({
           <Avatar src={avatar} />
           <div>
             <Typography variant='subtitle2'>
-              By {authorName} • {formattedPublishedAt}
+              By {authorName || 'Unknown User'} • {formattedPublishedAt}
             </Typography>
             <Typography
               color='text.secondary'

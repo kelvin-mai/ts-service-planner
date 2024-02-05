@@ -1,5 +1,5 @@
 import { useState, type FC } from 'react';
-import { redirect, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { Button, Skeleton, Stack, TextField } from '@mui/material';
 
@@ -33,9 +33,6 @@ type PostFieldValues = {
 export const PostForm: FC<PostFormProps> = ({ mode, post, disabled, onSubmit, onDelete }) => {
   const { register, handleSubmit } = useForm<PostFieldValues>();
   const { user } = useAuth();
-  if (!user) {
-    redirect('/blog');
-  }
   const [cover, setCover] = useState<Blob | null>(null);
   const [pending, setPending] = useState(false);
   const navigate = useNavigate();

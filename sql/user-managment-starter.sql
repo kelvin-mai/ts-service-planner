@@ -1,7 +1,7 @@
 -- Create a table for public profiles
 create table profiles (
   id uuid references auth.users on delete cascade not null primary key,
-  updated_at timestamp with time zone default now(),
+  updated_at timestamp with time zone,
   full_name text,
 
   constraint username_length check (char_length(username) >= 3)

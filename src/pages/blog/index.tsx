@@ -53,7 +53,7 @@ export const Component = () => {
     <>
       <Seo title='Blog' />
       <Stack spacing={1}>
-        <Typography variant='h3'>Blog</Typography>
+        <Typography variant='h2'>Blog</Typography>
         <Breadcrumbs
           links={breadcrumbs}
           current='Blog'
@@ -110,8 +110,8 @@ export const Component = () => {
                 authorName={post.author.full_name}
                 category={post.category}
                 publishedAt={post.updated_at || post.created_at}
-                readTime={post.readTime}
-                shortDescription={post.description}
+                content={post.content}
+                description={post.description}
                 title={post.title}
                 sx={{ height: '100%' }}
               />

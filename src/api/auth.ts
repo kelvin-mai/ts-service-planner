@@ -27,7 +27,7 @@ export const signUp = async (credentials: AuthCredentials) => {
   return data;
 };
 
-export const logout = supabase.auth.signOut;
+export const signOut = () => supabase.auth.signOut();
 
 export const resetPassword = async (email: string) => {
   const { data, error } = await supabase.auth.resetPasswordForEmail(email, {

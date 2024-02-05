@@ -16,6 +16,7 @@ import {
 
 import { RouterLink } from '@/components/common';
 import { useImageUrl } from '@/hooks';
+import { contentToReadtime } from '@/utils/calc';
 
 type PostCardProps = {
   id: string;
@@ -23,9 +24,9 @@ type PostCardProps = {
   authorName: string;
   category: string;
   publishedAt: string;
-  readTime: number;
-  shortDescription: string;
+  description: string;
   title: string;
+  content: string;
   sx?: SxProps;
 };
 
@@ -35,14 +36,15 @@ export const PostCard: FC<PostCardProps> = ({
   authorName,
   category,
   publishedAt,
-  readTime,
-  shortDescription,
+  description,
+  content,
   title,
   ...props
 }) => {
   const formattedPublishedAt = format(parseISO(publishedAt), 'MMM d, yyyy');
   const cover = useImageUrl('posts', `cover-${id}`);
   const avatar = useImageUrl('avatars', authorId);
+  const readTime = contentToReadtime(content);
 
   return (
     <Card {...props}>
@@ -94,7 +96,7 @@ export const PostCard: FC<PostCardProps> = ({
           }}
           variant='body1'
         >
-          {shortDescription}
+          {description}
         </Typography>
         <Stack
           alignItems='center'
