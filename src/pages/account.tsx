@@ -1,45 +1,32 @@
-import { useState } from 'react';
 import { json, redirect } from 'react-router';
-import { type SubmitHandler, useForm } from 'react-hook-form';
-import {
-  Avatar,
-  Box,
-  Button,
-  Container,
-  Stack,
-  TextField,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import toast from 'react-hot-toast';
+import { Box, Container, Skeleton, Stack, Typography } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
 
-import { useAuth, useImageUrl } from '@/hooks';
-import { FieldGroup, FileUploader, Seo } from '@/components/common';
+import { useAuth } from '@/hooks';
+import { FieldGroup, Seo } from '@/components/common';
+import { AccountForm } from '@/components/account-form';
 import { type ProfileDTO, updateProfile } from '@/api/profile';
 import { apiClient } from '@/api';
 
 export const Component = () => {
-  const { user, profile, ...auth } = useAuth();
-  console.log({ user, profile, ...auth });
-  if (auth.isPending) {
-    return <></>;
+  const { user, profile, isPending } = useAuth();
+  if (!user) {
+    return redirect('/auth/login');
   }
-  const [avatar, setAvatar] = useState<Blob | null>(null);
-  const avatarUrl = useImageUrl('avatars', profile.id);
-  const { mutate, isPending, isError } = useMutation({
+  const updateMutation = useMutation({
     mutationFn: (data: ProfileDTO) => updateProfile(profile.id, data),
-    onSuccess: () => apiClient.invalidateQueries({ queryKey: ['profile'] }),
+    onSuccess: () => {
+      apiClient.invalidateQueries({ queryKey: ['profile'] });
+      toast.success('Successfully updated account');
+    },
+    onError: () => {
+      toast.error('Something went wrong');
+    },
   });
-  if (isError) {
+  if (updateMutation.isError) {
     throw json({}, { status: 500 });
   }
-  const { register, handleSubmit } = useForm();
-  const handleUpdateProfile: SubmitHandler<any> = (data) => {
-    mutate({ ...data, avatar });
-  };
-  const handleCoverDrop = ([file]: File[]) => {
-    setAvatar(file);
-  };
   return (
     <>
       <Seo title='Account' />
@@ -58,46 +45,19 @@ export const Component = () => {
             <Typography variant='h4'>Account</Typography>
           </Stack>
           <Stack spacing={4}>
-            <form onSubmit={handleSubmit(handleUpdateProfile)}>
-              <FieldGroup label='Basic details'>
-                <Stack spacing={3}>
-                  <Tooltip title='Email address cannot be changed'>
-                    <TextField
-                      label='Email'
-                      disabled
-                      required
-                      value={user.email}
-                    />
-                  </Tooltip>
-                  <TextField
-                    label='Full name'
-                    {...register('full_name', { value: profile.full_name })}
-                  />
-                  <Stack
-                    alignItems='center'
-                    direction='row'
-                    spacing={2}
-                  >
-                    <Avatar
-                      src={avatarUrl || ''}
-                      sx={{ height: 100, width: 100 }}
-                    />
-                    <FileUploader
-                      accept={{ 'image/*': [] }}
-                      maxFiles={1}
-                      onDrop={handleCoverDrop}
-                      caption='(SVG, JPG, or PNG maximum 400x400)'
-                    />
-                  </Stack>
-                  <Button
-                    type='submit'
-                    disabled={isPending}
-                  >
-                    Submit Changes
-                  </Button>
-                </Stack>
-              </FieldGroup>
-            </form>
+            <FieldGroup label='Basic details'>
+              {isPending ? (
+                <Skeleton height={400} />
+              ) : (
+                <AccountForm
+                  id={profile.id}
+                  email={user.email}
+                  full_name={profile.full_name}
+                  onSubmit={updateMutation.mutate}
+                  disabled={updateMutation.isPending}
+                />
+              )}
+            </FieldGroup>
           </Stack>
         </Container>
       </Box>

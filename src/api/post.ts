@@ -1,4 +1,5 @@
 import { supabase } from './index';
+import { Profile } from './profile';
 
 export type PostDTO = {
   title: string;
@@ -11,12 +12,7 @@ export type PostDTO = {
 export type Post = Omit<PostDTO, 'cover'> & {
   id: string;
   // readTime: number;
-  author:
-    | {
-        id: string;
-        full_name: string | null;
-      }
-    | { id: string; full_name: string | null }[];
+  author: Profile;
   created_at: string;
   updated_at: string | null;
 };
@@ -32,7 +28,7 @@ updated_at,
 author (id, full_name)
 `;
 
-export const fetchPosts = async (page: number) => {
+export const fetchPosts = async (page: number): Promise<{ posts: Post[]; hasNext: boolean }> => {
   const from = page ? (page - 1) * 4 : 0;
   const to = from + 4;
   const { data, count, error } = await supabase
@@ -42,15 +38,17 @@ export const fetchPosts = async (page: number) => {
   if (error) {
     throw error;
   }
-  return { posts: data || [], hasNext: (count || 0) > to };
+  const posts: Post[] = data as any;
+  return { posts, hasNext: (count || 0) > to };
 };
 
-export const fetchPost = async (id: string) => {
+export const fetchPost = async (id: string): Promise<{ post: Post }> => {
   const { data, error } = await supabase.from('posts').select(selection).match({ id }).single();
   if (error) {
     throw error;
   }
-  return { post: data };
+  const post: Post = data as any;
+  return { post };
 };
 
 export const createPost = async ({ cover, ...body }: PostDTO) => {
@@ -67,7 +65,7 @@ export const createPost = async ({ cover, ...body }: PostDTO) => {
       throw error;
     }
   }
-  return data;
+  return data as Post;
 };
 
 export const updatePost = async (id: string, { cover, ...body }: PostDTO) => {
@@ -83,7 +81,7 @@ export const updatePost = async (id: string, { cover, ...body }: PostDTO) => {
       throw error;
     }
   }
-  return data;
+  return data as Post;
 };
 
 export const deletePost = async (id: string) => {
@@ -91,5 +89,5 @@ export const deletePost = async (id: string) => {
   if (error) {
     throw error;
   }
-  return data;
+  return data as Post;
 };

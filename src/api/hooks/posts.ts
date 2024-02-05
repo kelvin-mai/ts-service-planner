@@ -25,13 +25,13 @@ export const usePostsApi = () => {
     });
 
   const getCreateMutation = () =>
-    useMutation<Post>({
+    useMutation<Post, Error, PostDTO>({
       mutationFn: (data: PostDTO) => createPost(data),
       onSuccess: () => apiClient.invalidateQueries({ queryKey: ['posts'] }),
     });
 
   const getUpdateMutation = (id: string) =>
-    useMutation<Post>({
+    useMutation<Post, Error, PostDTO>({
       mutationFn: (data: PostDTO) => updatePost(id, data),
       onSuccess: () => apiClient.invalidateQueries({ queryKey: ['posts', id] }),
     });

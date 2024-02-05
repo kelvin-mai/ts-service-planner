@@ -7,10 +7,6 @@ import { updatePassword } from '@/api/auth';
 import { useAuth } from '@/hooks';
 
 export const Component = () => {
-  const { user } = useAuth();
-  if (!user) {
-    redirect('/');
-  }
   const [pending, setPending] = useState<boolean>(false);
   const { register, handleSubmit } = useForm<{ password: string }>();
   const navigate = useNavigate();

@@ -1,4 +1,4 @@
-import { type FC, useState } from 'react';
+import { type FC } from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import { Box, Button, Link, Stack, TextField } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
@@ -14,16 +14,16 @@ type AuthFormProps = {
 
 export const AuthForm: FC<AuthFormProps> = ({ authType, afterSubmit }) => {
   const { register, handleSubmit } = useForm<AuthCredentials>();
-  const { mutate, isPending } = useMutation({
-    mutationFn: (data: AuthCredentials) => (authType ? signIn(data) : signUp(data)),
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: (data: AuthCredentials) => (authType === 'login' ? signIn(data) : signUp(data)),
     onSuccess: () => apiClient.invalidateQueries({ queryKey: ['profile'] }),
   });
-  const handleLogin: SubmitHandler<AuthCredentials> = async (data) => {
-    mutate(data);
+  const submitFn: SubmitHandler<AuthCredentials> = async (data) => {
+    await mutateAsync(data);
     afterSubmit();
   };
   return (
-    <form onSubmit={handleSubmit(handleLogin)}>
+    <form onSubmit={handleSubmit(submitFn)}>
       <Stack spacing={3}>
         <TextField
           fullWidth

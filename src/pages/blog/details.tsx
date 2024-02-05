@@ -1,20 +1,8 @@
 import { json, useParams } from 'react-router';
-import {
-  Avatar,
-  Box,
-  Button,
-  Card,
-  Chip,
-  Container,
-  Skeleton,
-  Stack,
-  Typography,
-} from '@mui/material';
-import { format, parseISO } from 'date-fns';
+import { Button, Skeleton, Stack, Typography } from '@mui/material';
 
 import { RouterLink, Seo, Breadcrumbs, type BreadcrumbLink } from '@/components/common';
 import { BlogActions, PostDetails } from '@/components/blog';
-import { useImageUrl } from '@/hooks';
 import { usePostsApi } from '@/api/hooks';
 
 export const Component = () => {

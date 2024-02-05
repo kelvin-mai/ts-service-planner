@@ -6,16 +6,12 @@ export const useImageUrl = (bucket: string, filename: string) => {
   const [imageUrl, setImageUrl] = useState<string>();
 
   const getImageUrl = async () => {
-    const { data, error } = await supabase.storage.from(bucket).download(filename);
-    if (error) {
-      console.log(error);
-    }
+    const { data } = await supabase.storage.from(bucket).download(filename);
     return data ? URL.createObjectURL(data) : undefined;
   };
 
   useEffect(() => {
     getImageUrl().then(setImageUrl);
-  }, [filename]);
-
+  }, [bucket, filename]);
   return imageUrl;
 };

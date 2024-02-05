@@ -7,7 +7,7 @@ import { AuthForm } from '@/components/auth';
 export const Component = () => {
   const navigate = useNavigate();
   const afterSubmit = () => {
-    navigate('/account');
+    navigate('/');
   };
   return (
     <>
