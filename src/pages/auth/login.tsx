@@ -1,9 +1,14 @@
+import { useNavigate } from 'react-router';
 import { Card, CardContent, CardHeader, Link, Typography } from '@mui/material';
 
 import { RouterLink, Seo } from '@/components/common';
 import { AuthForm } from '@/components/auth';
 
 export const Component = () => {
+  const navigate = useNavigate();
+  const afterSubmit = () => {
+    navigate('/account');
+  };
   return (
     <>
       <Seo title='Login' />
@@ -28,7 +33,10 @@ export const Component = () => {
           }
         />
         <CardContent>
-          <AuthForm authType='login' />
+          <AuthForm
+            authType='login'
+            afterSubmit={afterSubmit}
+          />
         </CardContent>
       </Card>
     </>

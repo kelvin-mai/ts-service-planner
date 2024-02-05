@@ -10,16 +10,34 @@ export type PostDTO = {
 
 export type Post = Omit<PostDTO, 'cover'> & {
   id: string;
-  readTime: number;
-  publishedAt: string;
+  // readTime: number;
+  author:
+    | {
+        id: string;
+        full_name: string | null;
+      }
+    | { id: string; full_name: string | null }[];
+  created_at: string;
+  updated_at: string | null;
 };
+
+const selection = `
+id,
+title,
+description,
+category,
+content,
+created_at,
+updated_at,
+author (id, full_name)
+`;
 
 export const fetchPosts = async (page: number) => {
   const from = page ? (page - 1) * 4 : 0;
   const to = from + 4;
   const { data, count, error } = await supabase
     .from('posts')
-    .select('*', { count: 'exact' })
+    .select(selection, { count: 'exact' })
     .range(from, to);
   if (error) {
     throw error;
@@ -28,7 +46,7 @@ export const fetchPosts = async (page: number) => {
 };
 
 export const fetchPost = async (id: string) => {
-  const { data, error } = await supabase.from('posts').select().match({ id }).single();
+  const { data, error } = await supabase.from('posts').select(selection).match({ id }).single();
   if (error) {
     throw error;
   }
@@ -42,7 +60,9 @@ export const createPost = async ({ cover, ...body }: PostDTO) => {
   }
 
   if (cover) {
-    const { error } = await supabase.storage.from('posts').upload(`cover-${data.id}`, cover);
+    const { error } = await supabase.storage
+      .from('posts')
+      .upload(`cover-${data.id}`, cover, { upsert: true });
     if (error) {
       throw error;
     }
@@ -56,7 +76,9 @@ export const updatePost = async (id: string, { cover, ...body }: PostDTO) => {
     throw error;
   }
   if (cover) {
-    const { error } = await supabase.storage.from('posts').upload(`cover-${data.id}`, cover);
+    const { error } = await supabase.storage
+      .from('posts')
+      .upload(`cover-${data.id}`, cover, { upsert: true });
     if (error) {
       throw error;
     }

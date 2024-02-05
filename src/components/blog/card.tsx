@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import {
   Avatar,
   Box,
@@ -8,9 +8,10 @@ import {
   CardMedia,
   Chip,
   Link,
+  Skeleton,
   Stack,
-  Typography,
   type SxProps,
+  Typography,
 } from '@mui/material';
 
 import { RouterLink } from '@/components/common';
@@ -18,37 +19,30 @@ import { useImageUrl } from '@/hooks';
 
 type PostCardProps = {
   id: string;
-  authorAvatar?: string;
-  authorName?: string;
+  authorId: string;
+  authorName: string;
   category: string;
-  publishedAt?: number;
+  publishedAt: string;
   readTime: number;
   shortDescription: string;
-  sx?: SxProps;
   title: string;
+  sx?: SxProps;
 };
 
 export const PostCard: FC<PostCardProps> = ({
   id,
-  authorAvatar = '/assets/avatars/avatar-jie-yan-song.png',
-  authorName = 'Jie Yan Song',
+  authorId,
+  authorName,
   category,
-  publishedAt = Date.now(),
+  publishedAt,
   readTime,
   shortDescription,
   title,
   ...props
 }) => {
-  const formattedPublishedAt = format(publishedAt, 'MMM d, yyyy');
+  const formattedPublishedAt = format(parseISO(publishedAt), 'MMM d, yyyy');
   const cover = useImageUrl('posts', `cover-${id}`);
-
-  const getInitials = (name = ''): string =>
-    name
-      .replace(/\s+/, ' ')
-      .split(' ')
-      .slice(0, 2)
-      .map((v) => v && v[0].toUpperCase())
-      .join('');
+  const avatar = useImageUrl('avatars', authorId);
 
   return (
     <Card {...props}>
@@ -57,18 +51,24 @@ export const PostCard: FC<PostCardProps> = ({
         href={`/blog/${id}`}
         sx={{ height: 280 }}
       >
-        <Box
-          component='img'
-          src={cover}
-          crossOrigin='anonymous'
-          alt='cover'
-          sx={{
-            width: '100%',
-            objectPosition: 'center',
-            objectFit: 'cover',
-            height: '100%',
-          }}
-        />
+        {!cover ? (
+          <Skeleton
+            component='div'
+            height='100%'
+          />
+        ) : (
+          <Box
+            component='img'
+            src={cover}
+            alt='cover'
+            sx={{
+              width: '100%',
+              objectPosition: 'center',
+              objectFit: 'cover',
+              height: '100%',
+            }}
+          />
+        )}
       </CardMedia>
       <CardContent>
         <Box sx={{ mb: 2 }}>
@@ -108,7 +108,7 @@ export const PostCard: FC<PostCardProps> = ({
             direction='row'
             spacing={2}
           >
-            <Avatar src={authorAvatar}>{getInitials(authorName)}</Avatar>
+            <Avatar src={avatar} />
             <Typography variant='subtitle2'>
               By {authorName} • {formattedPublishedAt}
             </Typography>

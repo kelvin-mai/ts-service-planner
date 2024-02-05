@@ -1,28 +1,20 @@
 import { useParams, json } from 'react-router';
 import { Stack, Typography } from '@mui/material';
-import { useQuery, useMutation } from '@tanstack/react-query';
 
 import { Breadcrumbs, type BreadcrumbLink, Seo } from '@/components/common';
 import { PostForm } from '@/components/blog';
-import { type Post, type PostDTO, deletePost, fetchPost, updatePost } from '@/api/post';
-import { apiClient } from '@/api';
+import { usePostsApi } from '@/api/hooks';
 
 export const Component = () => {
   const { id } = useParams();
-  const { data, isPending, isError } = useQuery<{ post: Post }>({
-    queryKey: ['posts', id],
-    queryFn: () => fetchPost(id!),
-  });
+  if (!id) {
+    throw json({}, { status: 404 });
+  }
 
-  const updateMutation = useMutation({
-    mutationFn: (data: PostDTO) => updatePost(id!, data),
-    onSuccess: () => apiClient.invalidateQueries({ queryKey: ['posts', id] }),
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: () => deletePost(id!),
-    onSuccess: () => apiClient.invalidateQueries({ queryKey: ['posts'] }),
-  });
+  const { getPostQuery, getUpdateMutation, getDeleteMutation } = usePostsApi();
+  const { data, isPending, isError } = getPostQuery(id);
+  const updateMutation = getUpdateMutation(id);
+  const deleteMutation = getDeleteMutation(id);
 
   if (isError) {
     throw json({}, { status: 404 });

@@ -1,16 +1,12 @@
 import { Stack, Typography } from '@mui/material';
-import { useMutation } from '@tanstack/react-query';
 
 import { Breadcrumbs, type BreadcrumbLink, Seo } from '@/components/common';
 import { PostForm } from '@/components/blog';
-import { createPost } from '@/api/post';
-import { apiClient } from '@/api';
+import { usePostsApi } from '@/api/hooks';
 
 export const Component = () => {
-  const mutation = useMutation({
-    mutationFn: createPost,
-    onSuccess: () => apiClient.invalidateQueries({ queryKey: ['posts'] }),
-  });
+  const { getCreateMutation } = usePostsApi();
+  const createMutation = getCreateMutation();
 
   const breadcrumbs: BreadcrumbLink[] = [
     { href: '/', title: 'Home' },
@@ -29,7 +25,7 @@ export const Component = () => {
       </Stack>
       <PostForm
         mode='create'
-        onSubmit={mutation.mutate}
+        onSubmit={createMutation.mutate}
       />
     </>
   );

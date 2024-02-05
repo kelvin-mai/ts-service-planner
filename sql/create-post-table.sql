@@ -5,11 +5,11 @@ create table posts (
   category text,
   content text,
   created_at timestamp with time zone not null default now(),
-  updated_at timestamp with time zone,
-  author uuid references auth.users
+  updated_at timestamp with time zone default now(),
+  author uuid references profiles on delete cascade not null
 );
 
-create trigger handle_updated_at before update on profiles
+create trigger handle_updated_at before update on posts
   for each row execute procedure moddatetime (updated_at);
 
 alter table posts enable row level security;

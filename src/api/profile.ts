@@ -5,6 +5,12 @@ export type ProfileDTO = {
   avatar?: Blob;
 };
 
+export type Profile = {
+  id: string;
+  full_name: string;
+  updated_at: string | null;
+};
+
 export const getProfile = async (id?: string) => {
   if (!id) {
     return null;
@@ -14,15 +20,6 @@ export const getProfile = async (id?: string) => {
     console.log(error);
   }
   return data;
-};
-
-export const getProfileImage = async (id: string) => {
-  const { data, error } = await supabase.storage.from('avatars').download(id);
-  if (error) {
-    console.log(error);
-    return null;
-  }
-  return URL.createObjectURL(data);
 };
 
 export const updateProfile = async (id: string, { avatar, ...body }: ProfileDTO) => {

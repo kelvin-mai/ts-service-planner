@@ -1,9 +1,15 @@
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, Link, Typography } from '@mui/material';
 
 import { RouterLink, Seo } from '@/components/common';
 import { AuthForm } from '@/components/auth';
+import { Stack } from '@mui/system';
 
 export const Component = () => {
+  const [submitted, setSubmitted] = useState<boolean>(false);
+  const afterSubmit = () => {
+    setSubmitted(true);
+  };
   return (
     <>
       <Seo title='Register' />
@@ -28,7 +34,23 @@ export const Component = () => {
           }
         />
         <CardContent>
-          <AuthForm authType='register' />
+          {submitted ? (
+            <Stack spacing={1}>
+              <Typography variant='subtitle1'>Almost done...</Typography>
+              <Typography
+                component='p'
+                color='text.secondary'
+                variant='subtitle2'
+              >
+                An email was sent to your account. Open it up to activate your account.
+              </Typography>
+            </Stack>
+          ) : (
+            <AuthForm
+              authType='register'
+              afterSubmit={afterSubmit}
+            />
+          )}
         </CardContent>
       </Card>
     </>

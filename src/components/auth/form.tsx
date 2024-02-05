@@ -1,22 +1,26 @@
 import { type FC, useState } from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import { Box, Button, Link, Stack, TextField } from '@mui/material';
+import { useMutation } from '@tanstack/react-query';
 
-import { signIn, signUp, type AuthCredentials } from '@/api/auth';
 import { RouterLink } from '@/components/common';
+import { signIn, signUp, type AuthCredentials } from '@/api/auth';
+import { apiClient } from '@/api';
 
 type AuthFormProps = {
   authType: 'login' | 'register';
+  afterSubmit: () => void;
 };
 
-export const AuthForm: FC<AuthFormProps> = ({ authType }) => {
-  const [loading, setLoading] = useState<boolean>(false);
+export const AuthForm: FC<AuthFormProps> = ({ authType, afterSubmit }) => {
   const { register, handleSubmit } = useForm<AuthCredentials>();
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: AuthCredentials) => (authType ? signIn(data) : signUp(data)),
+    onSuccess: () => apiClient.invalidateQueries({ queryKey: ['profile'] }),
+  });
   const handleLogin: SubmitHandler<AuthCredentials> = async (data) => {
-    setLoading(true);
-    const authenticate = authType === 'login' ? signIn : signUp;
-    await authenticate(data);
-    setLoading(false);
+    mutate(data);
+    afterSubmit();
   };
   return (
     <form onSubmit={handleSubmit(handleLogin)}>
@@ -39,7 +43,7 @@ export const AuthForm: FC<AuthFormProps> = ({ authType }) => {
           sx={{ mt: 2 }}
           type='submit'
           variant='contained'
-          disabled={loading}
+          disabled={isPending}
         >
           {authType === 'login' ? 'Log in' : 'Register'}
         </Button>

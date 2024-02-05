@@ -10,11 +10,10 @@ import {
   Typography,
 } from '@mui/material';
 import { ArrowLeft, ArrowRight } from '@untitled-ui/icons-react';
-import { useQuery } from '@tanstack/react-query';
 
 import { RouterLink, Seo, Breadcrumbs, type BreadcrumbLink } from '@/components/common';
 import { BlogActions, PostCard } from '@/components/blog';
-import { fetchPosts } from '@/api/post';
+import { usePostsApi } from '@/api/hooks';
 
 const PendingSkeleton = () => (
   <Grid
@@ -32,10 +31,8 @@ export const Component = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const pageParam = searchParams.get('page');
   const page = pageParam ? parseInt(pageParam) : 1;
-  const { data, isPending, isError } = useQuery<{ posts: any[]; hasNext: boolean }>({
-    queryKey: ['posts', page],
-    queryFn: () => fetchPosts(page),
-  });
+  const { getPostsQuery } = usePostsApi();
+  const { data, isPending, isError } = getPostsQuery(page);
   const breadcrumbs: BreadcrumbLink[] = [{ href: '/', title: 'Home' }];
   if (isError) {
     throw json({}, { status: 500 });
@@ -109,10 +106,10 @@ export const Component = () => {
             >
               <PostCard
                 id={post.id}
-                // authorAvatar={post.author.avatar}
-                // authorName={post.author.name}
+                authorId={post.author.id}
+                authorName={post.author.full_name}
                 category={post.category}
-                // publishedAt={post.publishedAt}
+                publishedAt={post.updated_at || post.created_at}
                 readTime={post.readTime}
                 shortDescription={post.description}
                 title={post.title}

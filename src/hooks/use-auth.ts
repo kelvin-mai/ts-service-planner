@@ -6,9 +6,9 @@ import { useQuery } from '@tanstack/react-query';
 
 export const useAuth = () => {
   const auth = useContext(AuthContext);
-  const { data } = useQuery({
+  const { data, isPending } = useQuery({
     queryKey: ['profile'],
     queryFn: () => getProfile(auth?.user.id),
   });
-  return { ...auth, profile: data };
+  return { ...auth, isPending, profile: data };
 };

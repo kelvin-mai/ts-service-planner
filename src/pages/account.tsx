@@ -1,43 +1,38 @@
-import { useEffect, useState } from 'react';
-import { json } from 'react-router';
+import { useState } from 'react';
+import { json, redirect } from 'react-router';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import {
   Avatar,
   Box,
   Button,
   Container,
-  Skeleton,
   Stack,
   TextField,
   Tooltip,
   Typography,
 } from '@mui/material';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
-import { useAuth } from '@/hooks';
+import { useAuth, useImageUrl } from '@/hooks';
 import { FieldGroup, FileUploader, Seo } from '@/components/common';
-import { type ProfileDTO, getProfile, updateProfile, getProfileImage } from '@/api/profile';
-import { deleteAccount } from '@/api/auth';
+import { type ProfileDTO, updateProfile } from '@/api/profile';
 import { apiClient } from '@/api';
 
 export const Component = () => {
-  const auth = useAuth();
+  const { user, profile, ...auth } = useAuth();
+  console.log({ user, profile, ...auth });
+  if (auth.isPending) {
+    return <></>;
+  }
   const [avatar, setAvatar] = useState<Blob | null>(null);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const { data, isPending, isError } = useQuery<ProfileDTO>({
-    queryKey: ['profile'],
-    queryFn: () => getProfile(auth.user.id),
-  });
-  const { mutate } = useMutation({
-    mutationFn: (data: ProfileDTO) => updateProfile(auth?.user.id, data),
+  const avatarUrl = useImageUrl('avatars', profile.id);
+  const { mutate, isPending, isError } = useMutation({
+    mutationFn: (data: ProfileDTO) => updateProfile(profile.id, data),
     onSuccess: () => apiClient.invalidateQueries({ queryKey: ['profile'] }),
   });
   if (isError) {
     throw json({}, { status: 500 });
   }
-  useEffect(() => {
-    getProfileImage(auth?.user.id).then((img) => setAvatarUrl(img));
-  }, [auth]);
   const { register, handleSubmit } = useForm();
   const handleUpdateProfile: SubmitHandler<any> = (data) => {
     mutate({ ...data, avatar });
@@ -71,17 +66,13 @@ export const Component = () => {
                       label='Email'
                       disabled
                       required
-                      value={auth.user.email}
+                      value={user.email}
                     />
                   </Tooltip>
-                  {data ? (
-                    <TextField
-                      label='Full name'
-                      {...register('full_name', { value: data.full_name })}
-                    />
-                  ) : (
-                    <Skeleton />
-                  )}
+                  <TextField
+                    label='Full name'
+                    {...register('full_name', { value: profile.full_name })}
+                  />
                   <Stack
                     alignItems='center'
                     direction='row'
@@ -89,7 +80,6 @@ export const Component = () => {
                   >
                     <Avatar
                       src={avatarUrl || ''}
-                      // '/assets/avatars/avatar-anika-visser.png'
                       sx={{ height: 100, width: 100 }}
                     />
                     <FileUploader
@@ -108,24 +98,6 @@ export const Component = () => {
                 </Stack>
               </FieldGroup>
             </form>
-            <FieldGroup label='Delete Account'>
-              <Stack
-                alignItems='flex-start'
-                spacing={3}
-              >
-                <Typography variant='subtitle1'>
-                  Delete your account and all of your source data. This is irreversible.
-                </Typography>
-                <Button
-                  color='error'
-                  variant='outlined'
-                  disabled={isPending}
-                  onClick={() => deleteAccount(auth.user.id)}
-                >
-                  Delete account
-                </Button>
-              </Stack>
-            </FieldGroup>
           </Stack>
         </Container>
       </Box>

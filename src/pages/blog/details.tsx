@@ -1,28 +1,32 @@
-import { Box, Button, Card, Chip, Container, Skeleton, Stack, Typography } from '@mui/material';
 import { json, useParams } from 'react-router';
-import { useQuery } from '@tanstack/react-query';
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  Chip,
+  Container,
+  Skeleton,
+  Stack,
+  Typography,
+} from '@mui/material';
+import { format, parseISO } from 'date-fns';
 
 import { RouterLink, Seo, Breadcrumbs, type BreadcrumbLink } from '@/components/common';
-import { PostContent } from '@/components/blog';
-import { fetchPost, type Post } from '@/api/post';
+import { BlogActions, PostDetails } from '@/components/blog';
 import { useImageUrl } from '@/hooks';
+import { usePostsApi } from '@/api/hooks';
 
 export const Component = () => {
   const { id } = useParams();
   if (!id) {
     throw json({}, { status: 404 });
   }
-  const { data, isPending, isError } = useQuery<{ post: any }>({
-    queryKey: ['posts', id],
-    queryFn: () => fetchPost(id),
-  });
+  const { getPostQuery } = usePostsApi();
+  const { data, isPending, isError } = getPostQuery(id);
   if (isError) {
     throw json({}, { status: 404 });
   }
-
-  const coverUrl = useImageUrl('posts', `cover-${id}`);
-
-  // const publishedAt = format(post.publishedAt, 'MMMM d, yyyy');
 
   const breadcrumbs: BreadcrumbLink[] = [
     { href: '/', title: 'Home' },
@@ -39,20 +43,7 @@ export const Component = () => {
           current={data?.post.title || 'Post'}
         />
       </Stack>
-      <Card
-        elevation={16}
-        sx={{
-          alignItems: 'center',
-          borderRadius: 1,
-          display: 'flex',
-          justifyContent: 'space-between',
-          mb: 8,
-          mt: 6,
-          px: 3,
-          py: 2,
-        }}
-      >
-        <Typography variant='subtitle1'>Hello, Admin</Typography>
+      <BlogActions>
         <Button
           component={RouterLink}
           href={`/blog/${data?.post.id}/edit`}
@@ -61,7 +52,7 @@ export const Component = () => {
         >
           Edit Post
         </Button>
-      </Card>
+      </BlogActions>
       {isPending ? (
         <Stack spacing={3}>
           <Skeleton height={40} />
@@ -69,58 +60,17 @@ export const Component = () => {
           <Skeleton height={400} />
         </Stack>
       ) : (
-        <>
-          <Stack spacing={3}>
-            <div>
-              <Chip label={data.post.category} />
-            </div>
-            <Typography variant='h3'>{data.post.title}</Typography>
-            <Typography
-              color='text.secondary'
-              variant='subtitle1'
-            >
-              {data.post.description}
-            </Typography>
-            <Stack
-              alignItems='center'
-              direction='row'
-              spacing={2}
-              sx={{ mt: 3 }}
-            >
-              {/* <Avatar src={post.author.avatar} /> */}
-              <div>
-                {/* <Typography variant='subtitle2'>
-                  By {post.author.name} • {publishedAt}
-                </Typography> */}
-                <Typography
-                  color='text.secondary'
-                  variant='body2'
-                >
-                  {data.post.readTime} min read
-                </Typography>
-              </div>
-            </Stack>
-          </Stack>
-          <Box
-            component='img'
-            src={coverUrl || ''}
-            crossOrigin='anonymous'
-            alt='cover'
-            sx={{
-              width: '100%',
-              objectPosition: 'center',
-              objectFit: 'cover',
-              borderRadius: 1,
-              height: 380,
-              mt: 3,
-            }}
-          />
-          {data.post.content && (
-            <Container sx={{ py: 3 }}>
-              <PostContent content={data.post.content} />
-            </Container>
-          )}
-        </>
+        <PostDetails
+          id={data.post.id}
+          authorId={data.post.author.id}
+          authorName={data.post.author.full_name}
+          category={data.post.category}
+          publishedAt={data.post.updated_at || data.post.created_at}
+          readTime={data.post.readTime}
+          description={data.post.description}
+          title={data.post.title}
+          content={data.post.content}
+        />
       )}
     </>
   );
