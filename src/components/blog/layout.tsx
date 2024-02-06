@@ -9,7 +9,7 @@ export const BlogLayout: FC<PropsWithChildren> = ({ children }) => {
       component='main'
       sx={{
         flexGrow: 1,
-        py: 8,
+        py: 16,
       }}
     >
       <Container maxWidth='xl'>

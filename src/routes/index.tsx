@@ -2,12 +2,17 @@ import { Outlet, createBrowserRouter } from 'react-router-dom';
 
 import { ErrorPage } from '@/pages/error';
 
+import { MarketingLayout } from '@/layouts/marketing';
 import { AuthLayout } from '@/components/auth';
 import { BlogLayout } from '@/components/blog';
 
 export const router = createBrowserRouter([
   {
-    element: <Outlet />,
+    element: (
+      <MarketingLayout>
+        <Outlet />
+      </MarketingLayout>
+    ),
     errorElement: <ErrorPage />,
     children: [
       {
@@ -21,20 +26,6 @@ export const router = createBrowserRouter([
       {
         path: '/account',
         lazy: () => import('@/pages/account'),
-      },
-      {
-        path: '/auth/',
-        element: (
-          <AuthLayout>
-            <Outlet />
-          </AuthLayout>
-        ),
-        children: [
-          { path: 'login', lazy: () => import('@/pages/auth/login') },
-          { path: 'register', lazy: () => import('@/pages/auth/register') },
-          { path: 'forgot-password', lazy: () => import('@/pages/auth/forgot-password') },
-          { path: 'update-password', lazy: () => import('@/pages/auth/update-password') },
-        ],
       },
       {
         path: '/blog/',
@@ -62,6 +53,20 @@ export const router = createBrowserRouter([
           },
         ],
       },
+    ],
+  },
+  {
+    path: '/auth/',
+    element: (
+      <AuthLayout>
+        <Outlet />
+      </AuthLayout>
+    ),
+    children: [
+      { path: 'login', lazy: () => import('@/pages/auth/login') },
+      { path: 'register', lazy: () => import('@/pages/auth/register') },
+      { path: 'forgot-password', lazy: () => import('@/pages/auth/forgot-password') },
+      { path: 'update-password', lazy: () => import('@/pages/auth/update-password') },
     ],
   },
 ]);
