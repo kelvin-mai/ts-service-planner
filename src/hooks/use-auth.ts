@@ -5,10 +5,6 @@ import { AuthContext } from '@/context/auth';
 import { Profile, getProfile } from '@/api/profile';
 import { Session } from '@supabase/supabase-js';
 
-type UseAuthOptions = {
-  guard: boolean;
-};
-
 type UseAuthObject = Session & { isAuthorized: (id?: string) => boolean } & (
     | {
         isPending: true;
@@ -20,7 +16,7 @@ type UseAuthObject = Session & { isAuthorized: (id?: string) => boolean } & (
       }
   );
 
-export const useAuth = (options?: UseAuthOptions) => {
+export const useAuth = () => {
   const auth = useContext(AuthContext);
   const { data, isPending } = useQuery({
     queryKey: ['profile'],

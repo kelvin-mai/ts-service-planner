@@ -14,10 +14,10 @@ import {
   type Theme,
 } from '@mui/material';
 
-import { Logo, RouterLink } from '@/components/common';
+import { NavItem } from '@/types';
+import { Brand, Logo, RouterLink } from '@/components/common';
 import { useWindowScroll } from '@/hooks';
 import { TopNavItem } from './top-nav-item';
-import { NavItem } from './nav-item';
 
 type TopNavProps = {
   items: NavItem[];
@@ -25,7 +25,7 @@ type TopNavProps = {
 };
 
 export const TopNav: FC<TopNavProps> = ({ items, onMobileNavOpen }) => {
-  const location = useLocation();
+  const { pathname } = useLocation();
   const mdUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'));
   const [elevate, setElevate] = useState<boolean>(false);
   const TOP_NAV_HEIGHT = 64;
@@ -100,23 +100,7 @@ export const TopNav: FC<TopNavProps> = ({ items, onMobileNavOpen }) => {
               >
                 <Logo />
               </Box>
-              {mdUp && (
-                <Box
-                  sx={{
-                    color: 'text.primary',
-                    fontFamily: "'Plus Jakarta Sans', sans-serif",
-                    fontSize: 14,
-                    fontWeight: 800,
-                    letterSpacing: '0.3px',
-                    lineHeight: 2.5,
-                    '& span': {
-                      color: 'primary.main',
-                    },
-                  }}
-                >
-                  Service <span>Planner</span>
-                </Box>
-              )}
+              {mdUp && <Brand />}
             </Stack>
           </Stack>
           {mdUp && (
@@ -145,7 +129,7 @@ export const TopNav: FC<TopNavProps> = ({ items, onMobileNavOpen }) => {
                   <>
                     {items.map((item) => (
                       <TopNavItem
-                        active={location.pathname === item.path}
+                        active={pathname === item.path}
                         external={item.external}
                         key={item.title}
                         path={item.path}

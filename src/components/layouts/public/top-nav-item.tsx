@@ -2,16 +2,13 @@ import type { FC } from 'react';
 import { Box, ButtonBase, Typography } from '@mui/material';
 
 import { RouterLink } from '@/components/common';
+import { NavItem } from '@/types';
 
-type TopNavItemProps = {
+type TopNavItemProps = NavItem & {
   active?: boolean;
-  external?: boolean;
-  path?: string;
-  title: string;
 };
 
 export const TopNavItem: FC<TopNavItemProps> = ({ active, external, path, title }) => {
-  console.log({ active, path, external, title });
   const linkProps = path
     ? external
       ? {

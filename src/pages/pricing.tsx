@@ -25,7 +25,7 @@ export const Component = () => {
             backgroundColor: (theme) =>
               theme.palette.mode === 'dark' ? 'neutral.800' : 'neutral.50',
             pb: '120px',
-            pt: '184px',
+            pt: 12,
           }}
         >
           <Container maxWidth='lg'>

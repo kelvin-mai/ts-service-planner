@@ -13,7 +13,7 @@ export const Component = () => {
   const handleUpdatePassword: SubmitHandler<{ password: string }> = async (data) => {
     setPending(true);
     await updatePassword(data.password);
-    navigate('/');
+    navigate('/auth/login');
   };
   return (
     <AuthGuard>

@@ -3,7 +3,7 @@ import { Box, Container, Link, Stack, SvgIcon, Typography } from '@mui/material'
 import { styled } from '@mui/material/styles';
 import { ArrowLeft } from '@untitled-ui/icons-react';
 
-import { Logo, RouterLink } from '@/components/common';
+import { Brand, Logo, RouterLink } from '@/components/common';
 
 const LayoutRoot = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -53,21 +53,7 @@ export const AuthLayout: FC<PropsWithChildren> = ({ children }) => {
               >
                 <Logo />
               </Box>
-              <Box
-                sx={{
-                  color: 'text.primary',
-                  fontFamily: "'Plus Jakarta Sans', sans-serif",
-                  fontSize: 14,
-                  fontWeight: 800,
-                  letterSpacing: '0.3px',
-                  lineHeight: 2.5,
-                  '& span': {
-                    color: 'primary.main',
-                  },
-                }}
-              >
-                Service <span>Planner</span>
-              </Box>
+              <Brand />
             </Stack>
           </Stack>
         </Container>

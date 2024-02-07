@@ -1,13 +1,12 @@
 import type { FC } from 'react';
+import { useLocation } from 'react-router';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Stack from '@mui/material/Stack';
 
-import { Logo, RouterLink } from '@/components/common';
-
+import { Brand, Logo, RouterLink } from '@/components/common';
+import { NavItem } from '@/types';
 import { SideNavItem } from './side-nav-item';
-import { useLocation } from 'react-router';
-import { NavItem } from './nav-item';
 
 type SideNavProps = {
   onClose?: () => void;
@@ -16,7 +15,7 @@ type SideNavProps = {
 };
 
 export const SideNav: FC<SideNavProps> = ({ onClose, open, items }) => {
-  const location = useLocation();
+  const { pathname } = useLocation();
 
   return (
     <Drawer
@@ -55,21 +54,7 @@ export const SideNav: FC<SideNavProps> = ({ onClose, open, items }) => {
           >
             <Logo />
           </Box>
-          <Box
-            sx={{
-              color: 'text.primary',
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
-              fontSize: 14,
-              fontWeight: 800,
-              letterSpacing: '0.3px',
-              lineHeight: 2.5,
-              '& span': {
-                color: 'primary.main',
-              },
-            }}
-          >
-            Service <span>Planner</span>
-          </Box>
+          <Brand />
         </Stack>
       </Box>
       <Box
@@ -87,7 +72,7 @@ export const SideNav: FC<SideNavProps> = ({ onClose, open, items }) => {
         >
           {items.map((item) => (
             <SideNavItem
-              active={location.pathname === item.path}
+              active={pathname === item.path}
               external={item.external}
               key={item.title}
               path={item.path}

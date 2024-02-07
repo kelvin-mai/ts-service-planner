@@ -2,12 +2,10 @@ import type { FC } from 'react';
 import { Box, ButtonBase } from '@mui/material';
 
 import { RouterLink } from '@/components/common';
+import { NavItem } from '@/types';
 
-type SideNavItemProps = {
+type SideNavItemProps = NavItem & {
   active?: boolean;
-  external?: boolean;
-  path?: string;
-  title: string;
 };
 
 export const SideNavItem: FC<SideNavItemProps> = ({ active, external, path, title }) => {

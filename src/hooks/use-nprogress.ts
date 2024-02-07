@@ -6,7 +6,7 @@ import { useMounted } from './use-mounted';
 
 export const useNprogress = () => {
   const mounted = useMounted();
-  const pathname = useLocation();
+  const { pathname } = useLocation();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {

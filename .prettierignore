@@ -10,4 +10,4 @@ package-lock.json
 
 # Misc
 dist
-public
+./public/

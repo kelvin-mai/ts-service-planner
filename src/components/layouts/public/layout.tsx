@@ -1,12 +1,10 @@
 import { useState, type FC, type PropsWithChildren, useEffect } from 'react';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import type { Theme } from '@mui/material/styles/createTheme';
-import { styled } from '@mui/material/styles';
+import { useLocation } from 'react-router';
+import { styled, useMediaQuery, type Theme } from '@mui/material';
 
+import { NavItem } from '@/types/nav-item';
 import { SideNav } from './side-nav';
 import { TopNav } from './top-nav';
-import { NavItem } from './nav-item';
-import { useLocation } from 'react-router';
 
 const LayoutRoot = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -27,15 +25,12 @@ const items: NavItem[] = [
 export const Layout: FC<PropsWithChildren> = ({ children }) => {
   const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
   const [open, setOpen] = useState<boolean>(false);
-  const location = useLocation();
-  const handlePathnameChange = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
     if (open) {
       setOpen(false);
     }
-  };
-  useEffect(() => {
-    handlePathnameChange();
-  }, [location.pathname]);
+  }, [pathname]);
   return (
     <>
       <TopNav
