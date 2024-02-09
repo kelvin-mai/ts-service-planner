@@ -1,4 +1,6 @@
 import { type FC, useState, useRef } from 'react';
+import { useNavigate } from 'react-router';
+import toast from 'react-hot-toast';
 import { User01, Settings04 } from '@untitled-ui/icons-react';
 import {
   Avatar,
@@ -16,7 +18,8 @@ import {
 
 import { RouterLink } from '@/components/common';
 import { useImageUrl } from '@/hooks';
-import { Profile } from '@/api/profile';
+import type { Profile } from '@/api/profile';
+import { useProfileApi } from '@/api/hooks';
 
 type AccountButtonProps = {
   profile: Profile;
@@ -25,6 +28,12 @@ type AccountButtonProps = {
 export const AccountButton: FC<AccountButtonProps> = ({ profile }) => {
   const anchorRef = useRef<HTMLElement | null>(null);
   const [open, setOpen] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const { getSignOutMutation } = useProfileApi();
+  const signOut = getSignOutMutation({
+    onSuccess: () => navigate('/'),
+    onError: () => toast.error('Something went wrong'),
+  });
   const avatar = useImageUrl('avatars', profile.id);
   return (
     <Box>
@@ -103,7 +112,7 @@ export const AccountButton: FC<AccountButtonProps> = ({ profile }) => {
         >
           <Button
             color='inherit'
-            onClick={console.log}
+            onClick={() => signOut.mutate()}
             size='small'
           >
             Logout

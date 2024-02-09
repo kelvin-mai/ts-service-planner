@@ -17,7 +17,7 @@ export const getProfile = async (id?: string) => {
   }
   const { data, error } = await supabase.from('profiles').select().eq('id', id).single();
   if (error) {
-    console.log(error);
+    throw error;
   }
   return data;
 };
@@ -31,12 +31,14 @@ export const updateProfile = async (id: string, { avatar, ...body }: ProfileDTO)
     .select()
     .single();
   if (error) {
-    console.log('update error', error);
+    throw error;
   }
   if (avatar) {
     const { data, error } = await supabase.storage.from('avatars').upload(`${id}`, avatar);
     console.log('upload data', data);
-    console.log('upload error', error);
+    if (error) {
+      throw error;
+    }
   }
   return data;
 };

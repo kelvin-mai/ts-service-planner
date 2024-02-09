@@ -12,9 +12,8 @@ export const Component = () => {
     throw json({}, { status: 404 });
   }
 
-  const { getPostQuery, getUpdateMutation, getDeleteMutation } = usePostsApi();
-  const { data, isPending, isError } = getPostQuery(id);
-  // data?.post.author.id
+  const { getQuery, getUpdateMutation, getDeleteMutation } = usePostsApi();
+  const { data, isPending, isError } = getQuery(id);
   const updateMutation = getUpdateMutation(id);
   const deleteMutation = getDeleteMutation(id);
 

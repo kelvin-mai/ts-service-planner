@@ -1,26 +1,19 @@
 import { json } from 'react-router';
 import toast from 'react-hot-toast';
 import { Box, Container, Skeleton, Stack, Typography } from '@mui/material';
-import { useMutation } from '@tanstack/react-query';
 
 import { useAuth } from '@/hooks';
 import { type BreadcrumbLink, Breadcrumbs, FieldGroup, Seo } from '@/components/common';
 import { AccountForm } from '@/components/account-form';
-import { type ProfileDTO, updateProfile } from '@/api/profile';
-import { apiClient } from '@/api';
 import { AuthGuard } from '@/components/auth';
+import { useProfileApi } from '@/api/hooks';
 
 export const Component = () => {
   const { user, profile, isPending } = useAuth();
-  const updateMutation = useMutation({
-    mutationFn: (data: ProfileDTO) => updateProfile(profile?.id!, data),
-    onSuccess: () => {
-      apiClient.invalidateQueries({ queryKey: ['profile'] });
-      toast.success('Successfully updated account');
-    },
-    onError: () => {
-      toast.error('Something went wrong');
-    },
+  const { getUpdateMutation } = useProfileApi();
+  const updateMutation = getUpdateMutation(user.id, {
+    onSuccess: () => toast.success('Successfully updated account'),
+    onError: () => toast.error('Something went wrong'),
   });
   if (updateMutation.isError) {
     throw json({}, { status: 500 });
@@ -56,9 +49,9 @@ export const Component = () => {
                 <Skeleton height={400} />
               ) : (
                 <AccountForm
-                  id={profile?.id}
+                  id={profile.id}
                   email={user?.email}
-                  full_name={profile?.full_name || ''}
+                  full_name={profile.full_name || ''}
                   onSubmit={updateMutation.mutate}
                   disabled={updateMutation.isPending}
                 />

@@ -1,6 +1,5 @@
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, UseMutationOptions } from '@tanstack/react-query';
 
-import { apiClient } from '../index';
 import {
   type Post,
   type PostDTO,
@@ -10,41 +9,45 @@ import {
   updatePost,
   deletePost,
 } from '../post';
+import { withInvalidate } from '../utils';
 
 export const usePostsApi = () => {
-  const getPostsQuery = (page: number) =>
+  const getAllQuery = (page: number) =>
     useQuery<{ posts: any[]; hasNext: boolean }>({
       queryKey: ['posts', page],
       queryFn: () => fetchPosts(page),
     });
 
-  const getPostQuery = (id: string) =>
+  const getQuery = (id: string) =>
     useQuery<{ post: Post }>({
       queryKey: ['posts', id],
       queryFn: () => fetchPost(id),
     });
 
-  const getCreateMutation = () =>
+  const getCreateMutation = (options?: UseMutationOptions<Post, Error, PostDTO>) =>
     useMutation<Post, Error, PostDTO>({
       mutationFn: (data: PostDTO) => createPost(data),
-      onSuccess: () => apiClient.invalidateQueries({ queryKey: ['posts'] }),
+      onSuccess: withInvalidate(['posts'], options?.onSuccess),
+      onError: options?.onError,
     });
 
-  const getUpdateMutation = (id: string) =>
+  const getUpdateMutation = (id: string, options?: UseMutationOptions<Post, Error, PostDTO>) =>
     useMutation<Post, Error, PostDTO>({
       mutationFn: (data: PostDTO) => updatePost(id, data),
-      onSuccess: () => apiClient.invalidateQueries({ queryKey: ['posts', id] }),
+      onSuccess: withInvalidate(['posts', id], options?.onSuccess),
+      onError: options?.onError,
     });
 
-  const getDeleteMutation = (id: string) =>
+  const getDeleteMutation = (id: string, options?: UseMutationOptions<Post>) =>
     useMutation<Post>({
       mutationFn: () => deletePost(id),
-      onSuccess: () => apiClient.invalidateQueries({ queryKey: ['posts'] }),
+      onSuccess: withInvalidate(['posts', id], options?.onSuccess),
+      onError: options?.onError,
     });
 
   return {
-    getPostsQuery,
-    getPostQuery,
+    getAllQuery,
+    getQuery,
     getCreateMutation,
     getUpdateMutation,
     getDeleteMutation,

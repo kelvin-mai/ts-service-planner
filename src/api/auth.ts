@@ -18,7 +18,7 @@ export const signUp = async (credentials: AuthCredentials) => {
   const { data, error } = await supabase.auth.signUp({
     ...credentials,
     options: {
-      emailRedirectTo: `${getBaseUrl()}/auth/login`,
+      emailRedirectTo: `${getBaseUrl()}/account`,
     },
   });
   if (error) {

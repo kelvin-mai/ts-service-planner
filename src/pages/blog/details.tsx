@@ -12,8 +12,8 @@ export const Component = () => {
   if (!id) {
     throw json({}, { status: 404 });
   }
-  const { getPostQuery } = usePostsApi();
-  const { data, isPending, isError } = getPostQuery(id);
+  const { getQuery } = usePostsApi();
+  const { data, isPending, isError } = getQuery(id);
   if (isError) {
     throw json({}, { status: 404 });
   }

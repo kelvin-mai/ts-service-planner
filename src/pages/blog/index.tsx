@@ -31,8 +31,8 @@ export const Component = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const pageParam = searchParams.get('page');
   const page = pageParam ? parseInt(pageParam) : 1;
-  const { getPostsQuery } = usePostsApi();
-  const { data, isPending, isError } = getPostsQuery(page);
+  const { getAllQuery } = usePostsApi();
+  const { data, isPending, isError } = getAllQuery(page);
   const breadcrumbs: BreadcrumbLink[] = [{ href: '/', title: 'Home' }];
   if (isError) {
     throw json({}, { status: 500 });

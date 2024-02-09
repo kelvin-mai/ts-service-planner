@@ -1,9 +1,9 @@
 import { useContext } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import type { Session } from '@supabase/supabase-js';
 
 import { AuthContext } from '@/context/auth';
-import { Profile, getProfile } from '@/api/profile';
-import { Session } from '@supabase/supabase-js';
+import type { Profile } from '@/api/profile';
+import { useProfileApi } from '@/api/hooks';
 
 type UseAuthObject = Session & { isAuthorized: (id?: string) => boolean } & (
     | {
@@ -18,10 +18,8 @@ type UseAuthObject = Session & { isAuthorized: (id?: string) => boolean } & (
 
 export const useAuth = () => {
   const auth = useContext(AuthContext);
-  const { data, isPending } = useQuery({
-    queryKey: ['profile'],
-    queryFn: () => getProfile(auth?.user.id),
-  });
+  const { getQuery } = useProfileApi();
+  const { data, isPending } = getQuery(auth?.user.id);
 
   const isAuthorized = (id?: string) => {
     if (!id || !auth) {
