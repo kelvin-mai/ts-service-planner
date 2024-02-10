@@ -26,23 +26,23 @@ export const usePostsApi = () => {
 
   const getCreateMutation = (options?: UseMutationOptions<Post, Error, PostDTO>) =>
     useMutation<Post, Error, PostDTO>({
+      ...options,
       mutationFn: (data: PostDTO) => createPost(data),
       onSuccess: withInvalidate(['posts'], options?.onSuccess),
-      onError: options?.onError,
     });
 
   const getUpdateMutation = (id: string, options?: UseMutationOptions<Post, Error, PostDTO>) =>
     useMutation<Post, Error, PostDTO>({
+      ...options,
       mutationFn: (data: PostDTO) => updatePost(id, data),
       onSuccess: withInvalidate(['posts', id], options?.onSuccess),
-      onError: options?.onError,
     });
 
   const getDeleteMutation = (id: string, options?: UseMutationOptions<Post>) =>
     useMutation<Post>({
+      ...options,
       mutationFn: () => deletePost(id),
       onSuccess: withInvalidate(['posts', id], options?.onSuccess),
-      onError: options?.onError,
     });
 
   return {

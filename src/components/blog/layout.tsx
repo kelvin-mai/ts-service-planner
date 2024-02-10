@@ -1,7 +1,5 @@
 import type { FC, PropsWithChildren } from 'react';
-import { Box, Container, Divider } from '@mui/material';
-
-import { PostNewsletter } from './newsletter';
+import { Box, Container } from '@mui/material';
 
 export const BlogLayout: FC<PropsWithChildren> = ({ children }) => {
   return (
@@ -9,16 +7,10 @@ export const BlogLayout: FC<PropsWithChildren> = ({ children }) => {
       component='main'
       sx={{
         flexGrow: 1,
-        py: 16,
+        py: 10,
       }}
     >
-      <Container maxWidth='xl'>
-        {children}
-        <Divider sx={{ my: 3 }} />
-        <Box sx={{ mt: 8 }}>
-          <PostNewsletter />
-        </Box>
-      </Container>
+      <Container maxWidth='xl'>{children}</Container>
     </Box>
   );
 };

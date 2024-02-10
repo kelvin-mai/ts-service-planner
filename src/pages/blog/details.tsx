@@ -1,8 +1,14 @@
 import { json, useParams } from 'react-router';
-import { Button, Skeleton, Stack, Typography } from '@mui/material';
+import { Box, Button, Divider, Skeleton, Stack, Typography } from '@mui/material';
 
 import { RouterLink, Seo, Breadcrumbs, type BreadcrumbLink } from '@/components/common';
-import { BlogActions, PostDetails } from '@/components/blog';
+import {
+  BlogActions,
+  PostCommentAdd,
+  PostComments,
+  PostDetails,
+  PostNewsletter,
+} from '@/components/blog';
 import { usePostsApi } from '@/api/hooks';
 import { useAuth } from '@/hooks';
 
@@ -64,6 +70,19 @@ export const Component = () => {
           content={data.post.content}
         />
       )}
+      <Divider sx={{ my: 3 }} />
+      <Stack spacing={2}>
+        <PostComments
+          postId={id}
+          postAuthor={data?.post.author.id}
+        />
+      </Stack>
+      <Divider sx={{ my: 3 }} />
+      <PostCommentAdd postId={id} />
+      <Divider sx={{ my: 3 }} />
+      <Box sx={{ mt: 8 }}>
+        <PostNewsletter />
+      </Box>
     </>
   );
 };

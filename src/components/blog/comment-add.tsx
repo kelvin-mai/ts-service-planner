@@ -1,42 +1,60 @@
 import type { FC } from 'react';
-import { FaceSmile, Attachment01, Image01, Plus } from '@untitled-ui/icons-react';
-import {
-  Avatar,
-  Box,
-  Button,
-  IconButton,
-  OutlinedInput,
-  Stack,
-  SvgIcon,
-  useMediaQuery,
-  type Theme,
-} from '@mui/material';
+import { useForm, type SubmitHandler } from 'react-hook-form';
+import { Avatar, Box, Button, OutlinedInput, Stack, Skeleton } from '@mui/material';
 
-export const PostCommentAdd: FC = (props) => {
-  const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+import { useCommentsApi } from '@/api/hooks';
+import { useAuth, useImageUrl } from '@/hooks';
 
-  return (
-    <div {...props}>
+type PostCommentAddProps = {
+  postId: string;
+};
+
+type CommentFieldValues = {
+  content: string;
+};
+
+export const PostCommentAdd: FC<PostCommentAddProps> = ({ postId }) => {
+  const { user, isPending } = useAuth();
+  const { getCreateMutation } = useCommentsApi(postId);
+  const { register, handleSubmit, reset } = useForm<CommentFieldValues>();
+  const createMutation = getCreateMutation({
+    onSettled: () => reset(),
+  });
+  if (!user) {
+    return null;
+  }
+  const avatar = useImageUrl('avatars', user.id);
+  const submitFn: SubmitHandler<CommentFieldValues> = (data) => {
+    createMutation.mutate({
+      ...data,
+      post_id: postId,
+      author: user.id,
+    });
+  };
+
+  return isPending ? (
+    <Skeleton />
+  ) : (
+    <form onSubmit={handleSubmit(submitFn)}>
       <Stack
         alignItems='flex-start'
         direction='row'
         spacing={2}
       >
         <Avatar
-          src='/assets/avatars/avatar-anika-visser.png'
+          src={avatar}
           sx={{
             height: 40,
             width: 40,
           }}
-        >
-          A K
-        </Avatar>
+        />
         <Box sx={{ flexGrow: 1 }}>
           <OutlinedInput
             fullWidth
             multiline
             placeholder='Add a comment'
             rows={3}
+            {...register('content')}
           />
           <Stack
             alignItems='center'
@@ -45,44 +63,16 @@ export const PostCommentAdd: FC = (props) => {
             justifyContent='space-between'
             sx={{ mt: 3 }}
           >
-            <Stack
-              alignItems='center'
-              direction='row'
-              spacing={1}
+            <Button
+              variant='contained'
+              type='submit'
+              disabled={createMutation.isPending}
             >
-              {!smUp && (
-                <IconButton>
-                  <SvgIcon>
-                    <Plus />
-                  </SvgIcon>
-                </IconButton>
-              )}
-              {smUp && (
-                <>
-                  <IconButton>
-                    <SvgIcon>
-                      <Image01 />
-                    </SvgIcon>
-                  </IconButton>
-                  <IconButton>
-                    <SvgIcon>
-                      <Attachment01 />
-                    </SvgIcon>
-                  </IconButton>
-                  <IconButton>
-                    <SvgIcon>
-                      <FaceSmile />
-                    </SvgIcon>
-                  </IconButton>
-                </>
-              )}
-            </Stack>
-            <div>
-              <Button variant='contained'>Send</Button>
-            </div>
+              Send
+            </Button>
           </Stack>
         </Box>
       </Stack>
-    </div>
+    </form>
   );
 };

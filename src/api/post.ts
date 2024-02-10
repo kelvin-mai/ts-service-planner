@@ -1,3 +1,4 @@
+import { Comment } from './comment';
 import { supabase } from './index';
 import { Profile } from './profile';
 
@@ -11,22 +12,13 @@ export type PostDTO = {
 
 export type Post = Omit<PostDTO, 'cover'> & {
   id: string;
-  // readTime: number;
   author: Profile;
+  comments: Comment[];
   created_at: string;
   updated_at: string | null;
 };
 
-const selection = `
-id,
-title,
-description,
-category,
-content,
-created_at,
-updated_at,
-author (id, full_name)
-`;
+const selection = '*, author (id, full_name)';
 
 export const fetchPosts = async (page: number): Promise<{ posts: Post[]; hasNext: boolean }> => {
   const from = page ? (page - 1) * 4 : 0;
@@ -52,7 +44,7 @@ export const fetchPost = async (id: string): Promise<{ post: Post }> => {
 };
 
 export const createPost = async ({ cover, ...body }: PostDTO) => {
-  const { data, error } = await supabase.from('posts').insert(body).select().single();
+  const { data, error } = await supabase.from('posts').insert(body).select(selection).single();
   if (error) {
     throw error;
   }
@@ -69,7 +61,12 @@ export const createPost = async ({ cover, ...body }: PostDTO) => {
 };
 
 export const updatePost = async (id: string, { cover, ...body }: PostDTO) => {
-  const { data, error } = await supabase.from('posts').update(body).match({ id }).select().single();
+  const { data, error } = await supabase
+    .from('posts')
+    .update(body)
+    .match({ id })
+    .select(selection)
+    .single();
   if (error) {
     throw error;
   }

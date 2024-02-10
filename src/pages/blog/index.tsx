@@ -12,8 +12,9 @@ import {
 import { ArrowLeft, ArrowRight } from '@untitled-ui/icons-react';
 
 import { RouterLink, Seo, Breadcrumbs, type BreadcrumbLink } from '@/components/common';
-import { BlogActions, PostCard } from '@/components/blog';
+import { BlogActions, PostCard, PostNewsletter } from '@/components/blog';
 import { usePostsApi } from '@/api/hooks';
+import { Box } from '@mui/system';
 
 const PendingSkeleton = () => (
   <Grid
@@ -152,6 +153,10 @@ export const Component = () => {
           Older posts
         </Button>
       </Stack>
+      <Divider sx={{ my: 3 }} />
+      <Box sx={{ mt: 8 }}>
+        <PostNewsletter />
+      </Box>
     </>
   );
 };
