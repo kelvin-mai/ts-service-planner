@@ -2,11 +2,12 @@ import { useQuery, useMutation, UseMutationOptions } from '@tanstack/react-query
 
 import { signOut } from '../auth';
 import { type Profile, type ProfileDTO, getProfile, updateProfile } from '../profile';
-import { withInvalidate } from '../utils';
+import { queryDefaults, withInvalidate, withReset } from '../utils';
 
 export const useProfileApi = () => {
   const getQuery = (id?: string) =>
     useQuery({
+      ...queryDefaults,
       queryKey: ['profile'],
       queryFn: () => getProfile(id),
     });
@@ -24,7 +25,7 @@ export const useProfileApi = () => {
   const getSignOutMutation = (options?: UseMutationOptions<Profile, Error>) =>
     useMutation({
       mutationFn: () => signOut(),
-      onSuccess: withInvalidate(['profile'], options?.onSuccess),
+      onSuccess: withReset(['profile'], options?.onSuccess),
       onError: options?.onError,
     });
 

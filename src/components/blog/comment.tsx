@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import { formatDistanceToNow, parseISO } from 'date-fns';
-import { Avatar, Box, Link, Skeleton, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Link, Stack, Typography } from '@mui/material';
 
 import { useCommentsApi } from '@/api/hooks';
 import { useAuth, useImageUrl } from '@/hooks';
@@ -77,30 +77,5 @@ export const PostComment: FC<PostCommentProps> = ({
         </Typography>
       </Box>
     </Stack>
-  );
-};
-
-type PostCommentsProps = {
-  postId: string;
-  postAuthor?: string;
-};
-
-export const PostComments: FC<PostCommentsProps> = ({ postId, postAuthor }) => {
-  const { getAllQuery } = useCommentsApi(postId);
-  const { data, isPending } = getAllQuery();
-  return (
-    <>
-      {isPending ? (
-        <Skeleton />
-      ) : (
-        data?.map((c) => (
-          <PostComment
-            key={c.id}
-            postAuthor={postAuthor}
-            {...c}
-          />
-        ))
-      )}
-    </>
   );
 };

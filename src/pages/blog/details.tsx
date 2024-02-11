@@ -4,12 +4,12 @@ import { Box, Button, Divider, Skeleton, Stack, Typography } from '@mui/material
 import { RouterLink, Seo, Breadcrumbs, type BreadcrumbLink } from '@/components/common';
 import {
   BlogActions,
+  PostComment,
   PostCommentAdd,
-  PostComments,
   PostDetails,
   PostNewsletter,
 } from '@/components/blog';
-import { usePostsApi } from '@/api/hooks';
+import { useCommentsApi, usePostsApi } from '@/api/hooks';
 import { useAuth } from '@/hooks';
 
 export const Component = () => {
@@ -19,7 +19,9 @@ export const Component = () => {
     throw json({}, { status: 404 });
   }
   const { getQuery } = usePostsApi();
+  const { getAllQuery } = useCommentsApi(id);
   const { data, isPending, isError } = getQuery(id);
+  const { data: comments, isPending: commentsIsPending } = getAllQuery();
   if (isError) {
     throw json({}, { status: 404 });
   }
@@ -72,10 +74,17 @@ export const Component = () => {
       )}
       <Divider sx={{ my: 3 }} />
       <Stack spacing={2}>
-        <PostComments
-          postId={id}
-          postAuthor={data?.post.author.id}
-        />
+        {commentsIsPending ? (
+          <Skeleton />
+        ) : (
+          comments?.map((c) => (
+            <PostComment
+              key={c.id}
+              postAuthor={data?.post.author.id}
+              {...c}
+            />
+          ))
+        )}
       </Stack>
       <Divider sx={{ my: 3 }} />
       <PostCommentAdd postId={id} />

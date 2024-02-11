@@ -9,17 +9,19 @@ import {
   updatePost,
   deletePost,
 } from '../post';
-import { withInvalidate } from '../utils';
+import { queryDefaults, withInvalidate } from '../utils';
 
 export const usePostsApi = () => {
   const getAllQuery = (page: number) =>
     useQuery<{ posts: any[]; hasNext: boolean }>({
+      ...queryDefaults,
       queryKey: ['posts', page],
       queryFn: () => fetchPosts(page),
     });
 
   const getQuery = (id: string) =>
     useQuery<{ post: Post }>({
+      ...queryDefaults,
       queryKey: ['posts', id],
       queryFn: () => fetchPost(id),
     });

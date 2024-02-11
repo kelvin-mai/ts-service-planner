@@ -11,7 +11,3 @@
 @import '~@fontsource/roboto-mono/400.css';
 @import '~@fontsource/plus-jakarta-sans/600.css';
 @import '~@fontsource/plus-jakarta-sans/700.css';
-
-.force-no-outline {
-  outline: 'none' !important;
-}

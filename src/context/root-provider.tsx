@@ -1,6 +1,7 @@
 import type { FC, PropsWithChildren } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -31,6 +32,7 @@ export const RootProvider: FC<PropsWithChildren> = ({ children }) => {
             </ThemeProvider>
           </AuthProvider>
         </LocalizationProvider>
+        <ReactQueryDevtools />
       </QueryClientProvider>
     </HelmetProvider>
   );

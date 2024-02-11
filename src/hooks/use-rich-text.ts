@@ -9,11 +9,6 @@ export const useRichTextEditor = (content: string) => {
   const editor = useEditor({
     content: initial,
     extensions: [StarterKit],
-    editorProps: {
-      attributes: {
-        className: 'force-no-outline',
-      },
-    },
   });
 
   return {

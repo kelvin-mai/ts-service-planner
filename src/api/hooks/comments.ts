@@ -7,13 +7,14 @@ import {
   createComment,
   deleteComment,
 } from '../comment';
-import { withInvalidate } from '../utils';
+import { queryDefaults, withInvalidate } from '../utils';
 
 export const useCommentsApi = (post_id: string) => {
   const queryKey = ['posts', post_id, 'comments'];
 
   const getAllQuery = () =>
     useQuery({
+      ...queryDefaults,
       queryKey,
       queryFn: () => getComments(post_id),
     });
