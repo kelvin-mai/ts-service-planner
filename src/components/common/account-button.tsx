@@ -33,8 +33,8 @@ export const AccountButton: FC<AccountButtonProps> = ({ profile }) => {
     onSuccess: () => navigate('/'),
     onError: () => toast.error('Something went wrong'),
   });
-  const { getImageUrl } = useStorage();
-  const avatar = getImageUrl('avatars', profile.id);
+  const { getImageUrlQuery } = useStorage();
+  const { data: avatar } = getImageUrlQuery('avatars', profile.id);
   return (
     <Box>
       <Box

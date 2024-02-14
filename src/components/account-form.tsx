@@ -15,8 +15,8 @@ type AccountFormProps = {
 
 export const AccountForm: FC<AccountFormProps> = ({ id, email, full_name, disabled, onSubmit }) => {
   const [avatar, setAvatar] = useState<Blob | null>(null);
-  const { getImageUrl } = useStorage();
-  const avatarUrl = getImageUrl('avatars', id);
+  const { getImageUrlQuery } = useStorage();
+  const { data: avatarUrl } = getImageUrlQuery('avatars', id);
   const { register, handleSubmit } = useForm<{ full_name: string }>();
   const handleCoverDrop = ([file]: File[]) => {
     setAvatar(file);

@@ -7,7 +7,7 @@ import { withInvalidate, withReset } from '@/api/utils';
 export const useProfile = () => {
   const getQuery = (id?: string) =>
     useQuery({
-      queryKey: ['profile'],
+      queryKey: ['profile', id],
       queryFn: () => getProfile(id),
     });
 

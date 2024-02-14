@@ -16,8 +16,9 @@ import {
 
 import { NavItem } from '@/types';
 import { Brand, Logo, RouterLink } from '@/components/common';
-import { useWindowScroll } from '@/hooks';
+import { useAuth, useWindowScroll } from '@/hooks';
 import { TopNavItem } from './top-nav-item';
+import { AccountButton } from '@/components/common/account-button';
 
 type TopNavProps = {
   items: NavItem[];
@@ -25,6 +26,7 @@ type TopNavProps = {
 };
 
 export const TopNav: FC<TopNavProps> = ({ items, onMobileNavOpen }) => {
+  const { user, profile, isPending } = useAuth();
   const { pathname } = useLocation();
   const mdUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'));
   const [elevate, setElevate] = useState<boolean>(false);
@@ -148,14 +150,18 @@ export const TopNav: FC<TopNavProps> = ({ items, onMobileNavOpen }) => {
             spacing={2}
             sx={{ flexGrow: 1 }}
           >
-            <Button
-              component={RouterLink}
-              size={mdUp ? 'medium' : 'small'}
-              variant='contained'
-              href='/auth/login'
-            >
-              Log In
-            </Button>
+            {user && !isPending && profile ? (
+              <AccountButton profile={profile} />
+            ) : (
+              <Button
+                component={RouterLink}
+                size={mdUp ? 'medium' : 'small'}
+                variant='contained'
+                href='/auth/login'
+              >
+                Log In
+              </Button>
+            )}
             {!mdUp && (
               <IconButton onClick={onMobileNavOpen}>
                 <SvgIcon fontSize='small'>
