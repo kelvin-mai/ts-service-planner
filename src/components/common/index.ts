@@ -4,6 +4,8 @@ export * from './code';
 export * from './file-uploader/file-uploader';
 export * from './form/field-group';
 export * from './logo';
+export * from './page/heading';
+export * from './page/main';
 export * from './scroll-bar';
 export * from './seo';
 export * from './toaster';

@@ -8,20 +8,18 @@ import {
   createPost,
   updatePost,
   deletePost,
-} from '../post';
-import { queryDefaults, withInvalidate } from '../utils';
+} from '@/api/post';
+import { withInvalidate } from '@/api/utils';
 
-export const usePostsApi = () => {
+export const usePosts = () => {
   const getAllQuery = (page: number) =>
     useQuery<{ posts: any[]; hasNext: boolean }>({
-      ...queryDefaults,
       queryKey: ['posts', page],
       queryFn: () => fetchPosts(page),
     });
 
   const getQuery = (id: string) =>
     useQuery<{ post: Post }>({
-      ...queryDefaults,
       queryKey: ['posts', id],
       queryFn: () => fetchPost(id),
     });

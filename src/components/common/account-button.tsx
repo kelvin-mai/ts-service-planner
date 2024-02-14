@@ -17,9 +17,8 @@ import {
 } from '@mui/material';
 
 import { RouterLink } from '@/components/common';
-import { useImageUrl } from '@/hooks';
 import type { Profile } from '@/api/profile';
-import { useProfileApi } from '@/api/hooks';
+import { useStorage, useProfile } from '@/hooks/api';
 
 type AccountButtonProps = {
   profile: Profile;
@@ -29,12 +28,13 @@ export const AccountButton: FC<AccountButtonProps> = ({ profile }) => {
   const anchorRef = useRef<HTMLElement | null>(null);
   const [open, setOpen] = useState<boolean>(false);
   const navigate = useNavigate();
-  const { getSignOutMutation } = useProfileApi();
+  const { getSignOutMutation } = useProfile();
   const signOut = getSignOutMutation({
     onSuccess: () => navigate('/'),
     onError: () => toast.error('Something went wrong'),
   });
-  const avatar = useImageUrl('avatars', profile.id);
+  const { getImageUrl } = useStorage();
+  const avatar = getImageUrl('avatars', profile.id);
   return (
     <Box>
       <Box

@@ -1,10 +1,9 @@
 import { useParams, json } from 'react-router';
-import { Stack, Typography } from '@mui/material';
 
-import { Breadcrumbs, type BreadcrumbLink, Seo } from '@/components/common';
+import { Heading, Main, type BreadcrumbLink, Seo } from '@/components/common';
 import { PostForm } from '@/components/blog';
 import { AuthGuard } from '@/components/auth';
-import { usePostsApi } from '@/api/hooks';
+import { usePosts } from '@/hooks/api';
 
 export const Component = () => {
   const { id } = useParams();
@@ -12,7 +11,7 @@ export const Component = () => {
     throw json({}, { status: 404 });
   }
 
-  const { getQuery, getUpdateMutation, getDeleteMutation } = usePostsApi();
+  const { getQuery, getUpdateMutation, getDeleteMutation } = usePosts();
   const { data, isPending, isError } = getQuery(id);
   const updateMutation = getUpdateMutation(id);
   const deleteMutation = getDeleteMutation(id);
@@ -31,21 +30,21 @@ export const Component = () => {
       authorized
       authorizeId={data?.post.author.id}
     >
-      <Seo title='Update this Post' />
-      <Stack spacing={1}>
-        <Typography variant='h2'>Update this Post</Typography>
-        <Breadcrumbs
-          links={breadcrumbs}
-          current={data?.post.title || 'This Post'}
+      <Main>
+        <Seo title='Update this Post' />
+        <Heading
+          breadcrumbs={breadcrumbs}
+          title='Update this Post'
+          current={data?.post.title}
         />
-      </Stack>
-      <PostForm
-        mode='edit'
-        post={data?.post}
-        onSubmit={updateMutation.mutate}
-        onDelete={deleteMutation.mutate}
-        disabled={isPending}
-      />
+        <PostForm
+          mode='edit'
+          post={data?.post}
+          onSubmit={updateMutation.mutate}
+          onDelete={deleteMutation.mutate}
+          disabled={isPending}
+        />
+      </Main>
     </AuthGuard>
   );
 };

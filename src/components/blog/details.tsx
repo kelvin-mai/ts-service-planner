@@ -2,9 +2,9 @@ import type { FC } from 'react';
 import { Avatar, Box, Chip, Container, Stack, Typography } from '@mui/material';
 import { format, parseISO } from 'date-fns';
 
-import { useImageUrl } from '@/hooks';
 import { PostContent } from './content';
 import { contentToReadtime } from '@/utils/calc';
+import { useStorage } from '@/hooks/api';
 
 type PostDetailsProps = {
   id: string;
@@ -27,8 +27,9 @@ export const PostDetails: FC<PostDetailsProps> = ({
   authorName,
   content,
 }) => {
-  const coverUrl = useImageUrl('posts', `cover-${id}`);
-  const avatar = useImageUrl('avatars', authorId);
+  const { getImageUrl } = useStorage();
+  const coverUrl = getImageUrl('posts', `cover-${id}`);
+  const avatar = getImageUrl('avatars', authorId);
   const formattedPublishedAt = format(parseISO(publishedAt), 'MMMM d, yyyy');
   const readTime = contentToReadtime(content);
   return (

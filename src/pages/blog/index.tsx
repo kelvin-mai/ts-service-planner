@@ -1,6 +1,7 @@
 import { json } from 'react-router';
 import { createSearchParams, useSearchParams } from 'react-router-dom';
 import {
+  Box,
   Button,
   Divider,
   Unstable_Grid2 as Grid,
@@ -11,10 +12,9 @@ import {
 } from '@mui/material';
 import { ArrowLeft, ArrowRight } from '@untitled-ui/icons-react';
 
-import { RouterLink, Seo, Breadcrumbs, type BreadcrumbLink } from '@/components/common';
+import { Heading, Main, RouterLink, Seo, type BreadcrumbLink } from '@/components/common';
 import { BlogActions, PostCard, PostNewsletter } from '@/components/blog';
-import { usePostsApi } from '@/api/hooks';
-import { Box } from '@mui/system';
+import { usePosts } from '@/hooks/api';
 
 const PendingSkeleton = () => (
   <Grid
@@ -32,7 +32,7 @@ export const Component = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const pageParam = searchParams.get('page');
   const page = pageParam ? parseInt(pageParam) : 1;
-  const { getAllQuery } = usePostsApi();
+  const { getAllQuery } = usePosts();
   const { data, isPending, isError } = getAllQuery(page);
   const breadcrumbs: BreadcrumbLink[] = [{ href: '/', title: 'Home' }];
   if (isError) {
@@ -51,15 +51,12 @@ export const Component = () => {
   };
 
   return (
-    <>
+    <Main>
       <Seo title='Blog' />
-      <Stack spacing={1}>
-        <Typography variant='h2'>Blog</Typography>
-        <Breadcrumbs
-          links={breadcrumbs}
-          current='Blog'
-        />
-      </Stack>
+      <Heading
+        breadcrumbs={breadcrumbs}
+        title='Blog'
+      />
       <BlogActions>
         <Button
           component={RouterLink}
@@ -157,6 +154,6 @@ export const Component = () => {
       <Box sx={{ mt: 8 }}>
         <PostNewsletter />
       </Box>
-    </>
+    </Main>
   );
 };

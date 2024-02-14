@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 
 import { RouterLink } from '@/components/common';
-import { useImageUrl } from '@/hooks';
+import { useStorage } from '@/hooks/api';
 import { contentToReadtime } from '@/utils/calc';
 
 type PostCardProps = {
@@ -42,8 +42,9 @@ export const PostCard: FC<PostCardProps> = ({
   ...props
 }) => {
   const formattedPublishedAt = format(parseISO(publishedAt), 'MMM d, yyyy');
-  const cover = useImageUrl('posts', `cover-${id}`);
-  const avatar = useImageUrl('avatars', authorId);
+  const { getImageUrl } = useStorage();
+  const cover = getImageUrl('posts', `cover-${id}`);
+  const avatar = getImageUrl('avatars', authorId);
   const readTime = contentToReadtime(content);
 
   return (

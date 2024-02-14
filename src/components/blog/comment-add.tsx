@@ -2,8 +2,8 @@ import type { FC } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { Avatar, Box, Button, OutlinedInput, Stack, Skeleton } from '@mui/material';
 
-import { useCommentsApi } from '@/api/hooks';
-import { useAuth, useImageUrl } from '@/hooks';
+import { useAuth } from '@/hooks';
+import { useStorage, useComments } from '@/hooks/api';
 
 type PostCommentAddProps = {
   postId: string;
@@ -15,7 +15,7 @@ type CommentFieldValues = {
 
 export const PostCommentAdd: FC<PostCommentAddProps> = ({ postId }) => {
   const { user, isPending } = useAuth();
-  const { getCreateMutation } = useCommentsApi(postId);
+  const { getCreateMutation } = useComments(postId);
   const { register, handleSubmit, reset } = useForm<CommentFieldValues>();
   const createMutation = getCreateMutation({
     onSettled: () => reset(),
@@ -23,7 +23,8 @@ export const PostCommentAdd: FC<PostCommentAddProps> = ({ postId }) => {
   if (!user) {
     return null;
   }
-  const avatar = useImageUrl('avatars', user.id);
+  const { getImageUrl } = useStorage();
+  const avatar = getImageUrl('avatars', user.id);
   const submitFn: SubmitHandler<CommentFieldValues> = (data) => {
     createMutation.mutate({
       ...data,

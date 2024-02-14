@@ -2,10 +2,6 @@ import type { QueryKey } from '@tanstack/react-query';
 
 import { apiClient } from './index';
 
-export const queryDefaults = {
-  staleTime: Infinity,
-};
-
 export const withInvalidate = (
   queryKey: QueryKey,
   f?: (data: any, variables: any, context: unknown) => unknown
@@ -22,7 +18,7 @@ export const withReset = (
   queryKey: QueryKey,
   f?: (data: any, variables: any, context: unknown) => unknown
 ) => {
-  return (...args: [any, any, unknown]) => {
+  return (...args: [data: any, variables: any, context: unknown]) => {
     apiClient.resetQueries({ queryKey });
     if (f) {
       return f(...args);

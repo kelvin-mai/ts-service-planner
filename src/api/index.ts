@@ -6,4 +6,4 @@ export const supabase = createClient(
   import.meta.env.VITE_SUPABASE_ANON_KEY
 );
 
-export const apiClient = new QueryClient();
+export const apiClient = new QueryClient({ defaultOptions: { queries: { staleTime: Infinity } } });

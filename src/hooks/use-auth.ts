@@ -3,7 +3,7 @@ import type { Session } from '@supabase/supabase-js';
 
 import { AuthContext } from '@/context/auth';
 import type { Profile } from '@/api/profile';
-import { useProfileApi } from '@/api/hooks';
+import { useProfile } from '@/hooks/api';
 
 type UseAuthObject = Session & { isAuthorized: (id?: string) => boolean } & (
     | {
@@ -18,7 +18,7 @@ type UseAuthObject = Session & { isAuthorized: (id?: string) => boolean } & (
 
 export const useAuth = () => {
   const auth = useContext(AuthContext);
-  const { getQuery } = useProfileApi();
+  const { getQuery } = useProfile();
   const { data, isPending } = getQuery(auth?.user.id);
 
   const isAuthorized = (id?: string) => {

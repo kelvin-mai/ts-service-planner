@@ -2,8 +2,8 @@ import type { FC } from 'react';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import { Avatar, Box, Link, Stack, Typography } from '@mui/material';
 
-import { useCommentsApi } from '@/api/hooks';
-import { useAuth, useImageUrl } from '@/hooks';
+import { useAuth } from '@/hooks';
+import { useComments, useStorage } from '@/hooks/api';
 import { Comment } from '@/api/comment';
 
 type PostCommentProps = Comment & { postAuthor?: string };
@@ -16,10 +16,11 @@ export const PostComment: FC<PostCommentProps> = ({
   created_at,
   postAuthor,
 }) => {
-  const avatar = useImageUrl('avatars', author.id);
+  const { getImageUrl } = useStorage();
+  const avatar = getImageUrl('avatars', author.id);
   const { isAuthorized } = useAuth();
   const canDelete = isAuthorized(author.id) || isAuthorized(postAuthor);
-  const { getDeleteMutation } = useCommentsApi(post_id);
+  const { getDeleteMutation } = useComments(post_id);
   const deleteMutation = getDeleteMutation(id);
   return (
     <Stack

@@ -1,4 +1,4 @@
-import { Comment } from './comment';
+// import { Comment } from './comment';
 import { supabase } from './index';
 import { Profile } from './profile';
 
@@ -13,7 +13,6 @@ export type PostDTO = {
 export type Post = Omit<PostDTO, 'cover'> & {
   id: string;
   author: Profile;
-  comments: Comment[];
   created_at: string;
   updated_at: string | null;
 };

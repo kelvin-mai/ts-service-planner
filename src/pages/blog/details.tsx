@@ -1,7 +1,7 @@
 import { json, useParams } from 'react-router';
-import { Box, Button, Divider, Skeleton, Stack, Typography } from '@mui/material';
+import { Box, Button, Divider, Skeleton, Stack } from '@mui/material';
 
-import { RouterLink, Seo, Breadcrumbs, type BreadcrumbLink } from '@/components/common';
+import { Heading, Main, RouterLink, Seo, type BreadcrumbLink } from '@/components/common';
 import {
   BlogActions,
   PostComment,
@@ -9,8 +9,8 @@ import {
   PostDetails,
   PostNewsletter,
 } from '@/components/blog';
-import { useCommentsApi, usePostsApi } from '@/api/hooks';
 import { useAuth } from '@/hooks';
+import { useComments, usePosts } from '@/hooks/api';
 
 export const Component = () => {
   const { isAuthorized } = useAuth();
@@ -18,8 +18,8 @@ export const Component = () => {
   if (!id) {
     throw json({}, { status: 404 });
   }
-  const { getQuery } = usePostsApi();
-  const { getAllQuery } = useCommentsApi(id);
+  const { getQuery } = usePosts();
+  const { getAllQuery } = useComments(id);
   const { data, isPending, isError } = getQuery(id);
   const { data: comments, isPending: commentsIsPending } = getAllQuery();
   if (isError) {
@@ -33,15 +33,13 @@ export const Component = () => {
   ];
 
   return (
-    <>
+    <Main>
       <Seo title={data?.post.title || 'Post Details'} />
-      <Stack spacing={1}>
-        <Typography variant='h2'>Post</Typography>
-        <Breadcrumbs
-          links={breadcrumbs}
-          current={data?.post.title || 'Post'}
-        />
-      </Stack>
+      <Heading
+        breadcrumbs={breadcrumbs}
+        title='Post'
+        current={data?.post.title}
+      />
       <BlogActions>
         {authorized && (
           <Button
@@ -92,6 +90,6 @@ export const Component = () => {
       <Box sx={{ mt: 8 }}>
         <PostNewsletter />
       </Box>
-    </>
+    </Main>
   );
 };

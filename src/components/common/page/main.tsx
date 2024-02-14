@@ -1,7 +1,7 @@
 import type { FC, PropsWithChildren } from 'react';
 import { Box, Container } from '@mui/material';
 
-export const BlogLayout: FC<PropsWithChildren> = ({ children }) => {
+export const Main: FC<PropsWithChildren> = ({ children }) => {
   return (
     <Box
       component='main'

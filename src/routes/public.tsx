@@ -3,7 +3,6 @@ import { Outlet, RouteObject } from 'react-router-dom';
 import { HomePage } from '@/pages/home';
 
 import { PublicLayout } from '@/components/layouts';
-import { BlogLayout } from '@/components/blog';
 
 export const publicRoutes: RouteObject = {
   element: (
@@ -22,11 +21,7 @@ export const publicRoutes: RouteObject = {
     },
     {
       path: '/blog/',
-      element: (
-        <BlogLayout>
-          <Outlet />
-        </BlogLayout>
-      ),
+      element: <Outlet />,
       children: [
         {
           path: '',

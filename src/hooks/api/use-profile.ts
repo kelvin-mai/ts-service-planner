@@ -1,13 +1,12 @@
 import { useQuery, useMutation, UseMutationOptions } from '@tanstack/react-query';
 
-import { signOut } from '../auth';
-import { type Profile, type ProfileDTO, getProfile, updateProfile } from '../profile';
-import { queryDefaults, withInvalidate, withReset } from '../utils';
+import { signOut } from '@/api/auth';
+import { type Profile, type ProfileDTO, getProfile, updateProfile } from '@/api/profile';
+import { withInvalidate, withReset } from '@/api/utils';
 
-export const useProfileApi = () => {
+export const useProfile = () => {
   const getQuery = (id?: string) =>
     useQuery({
-      ...queryDefaults,
       queryKey: ['profile'],
       queryFn: () => getProfile(id),
     });

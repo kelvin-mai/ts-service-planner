@@ -1,12 +1,10 @@
-import { Stack, Typography } from '@mui/material';
-
-import { Breadcrumbs, type BreadcrumbLink, Seo } from '@/components/common';
+import { type BreadcrumbLink, Heading, Main, Seo } from '@/components/common';
 import { PostForm } from '@/components/blog';
 import { AuthGuard } from '@/components/auth';
-import { usePostsApi } from '@/api/hooks';
+import { usePosts } from '@/hooks/api';
 
 export const Component = () => {
-  const { getCreateMutation } = usePostsApi();
+  const { getCreateMutation } = usePosts();
   const createMutation = getCreateMutation();
 
   const breadcrumbs: BreadcrumbLink[] = [
@@ -16,18 +14,18 @@ export const Component = () => {
 
   return (
     <AuthGuard>
-      <Seo title='Create a new Post' />
-      <Stack spacing={1}>
-        <Typography variant='h2'>Create a new Post</Typography>
-        <Breadcrumbs
-          links={breadcrumbs}
+      <Main>
+        <Seo title='Create a new Post' />
+        <Heading
+          breadcrumbs={breadcrumbs}
+          title='Create a new Post'
           current='New'
         />
-      </Stack>
-      <PostForm
-        mode='create'
-        onSubmit={createMutation.mutate}
-      />
+        <PostForm
+          mode='create'
+          onSubmit={createMutation.mutate}
+        />
+      </Main>
     </AuthGuard>
   );
 };

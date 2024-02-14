@@ -2,7 +2,7 @@ import { type FC, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Avatar, Button, Stack, TextField, Tooltip } from '@mui/material';
 
-import { useImageUrl } from '@/hooks';
+import { useStorage } from '@/hooks/api';
 import { FileUploader } from '@/components/common';
 
 type AccountFormProps = {
@@ -15,7 +15,8 @@ type AccountFormProps = {
 
 export const AccountForm: FC<AccountFormProps> = ({ id, email, full_name, disabled, onSubmit }) => {
   const [avatar, setAvatar] = useState<Blob | null>(null);
-  const avatarUrl = useImageUrl('avatars', id);
+  const { getImageUrl } = useStorage();
+  const avatarUrl = getImageUrl('avatars', id);
   const { register, handleSubmit } = useForm<{ full_name: string }>();
   const handleCoverDrop = ([file]: File[]) => {
     setAvatar(file);
