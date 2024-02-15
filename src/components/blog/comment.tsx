@@ -16,8 +16,8 @@ export const PostComment: FC<PostCommentProps> = ({
   created_at,
   postAuthor,
 }) => {
-  const { getImageUrl } = useStorage();
-  const avatar = getImageUrl('avatars', author.id);
+  const { getImageUrlQuery } = useStorage();
+  const { data: avatar } = getImageUrlQuery('avatars', author.id);
   const { isAuthorized } = useAuth();
   const canDelete = isAuthorized(author.id) || isAuthorized(postAuthor);
   const { getDeleteMutation } = useComments(post_id);

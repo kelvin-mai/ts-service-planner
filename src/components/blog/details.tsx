@@ -27,9 +27,9 @@ export const PostDetails: FC<PostDetailsProps> = ({
   authorName,
   content,
 }) => {
-  const { getImageUrl } = useStorage();
-  const coverUrl = getImageUrl('posts', `cover-${id}`);
-  const avatar = getImageUrl('avatars', authorId);
+  const { getImageUrlQuery } = useStorage();
+  const { data: coverUrl } = getImageUrlQuery('posts', `cover-${id}`);
+  const { data: avatar } = getImageUrlQuery('avatars', authorId);
   const formattedPublishedAt = format(parseISO(publishedAt), 'MMMM d, yyyy');
   const readTime = contentToReadtime(content);
   return (

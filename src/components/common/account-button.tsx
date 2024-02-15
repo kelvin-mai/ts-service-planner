@@ -19,6 +19,7 @@ import {
 import { RouterLink } from '@/components/common';
 import type { Profile } from '@/api/profile';
 import { useStorage, useProfile } from '@/hooks/api';
+import { useAuth } from '@/hooks';
 
 type AccountButtonProps = {
   profile: Profile;
@@ -28,6 +29,7 @@ export const AccountButton: FC<AccountButtonProps> = ({ profile }) => {
   const anchorRef = useRef<HTMLElement | null>(null);
   const [open, setOpen] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { getSignOutMutation } = useProfile();
   const signOut = getSignOutMutation({
     onSuccess: () => navigate('/'),
@@ -81,7 +83,7 @@ export const AccountButton: FC<AccountButtonProps> = ({ profile }) => {
             color='text.secondary'
             variant='body2'
           >
-            demo@devias.io
+            {user.email}
           </Typography>
         </Box>
         <Divider />

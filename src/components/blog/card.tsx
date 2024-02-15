@@ -42,9 +42,9 @@ export const PostCard: FC<PostCardProps> = ({
   ...props
 }) => {
   const formattedPublishedAt = format(parseISO(publishedAt), 'MMM d, yyyy');
-  const { getImageUrl } = useStorage();
-  const cover = getImageUrl('posts', `cover-${id}`);
-  const avatar = getImageUrl('avatars', authorId);
+  const { getImageUrlQuery } = useStorage();
+  const { data: cover } = getImageUrlQuery('posts', `cover-${id}`);
+  const { data: avatar } = getImageUrlQuery('avatars', authorId);
   const readTime = contentToReadtime(content);
 
   return (

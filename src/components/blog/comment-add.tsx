@@ -23,8 +23,8 @@ export const PostCommentAdd: FC<PostCommentAddProps> = ({ postId }) => {
   if (!user) {
     return null;
   }
-  const { getImageUrl } = useStorage();
-  const avatar = getImageUrl('avatars', user.id);
+  const { getImageUrlQuery } = useStorage();
+  const { data: avatar } = getImageUrlQuery('avatars', user.id);
   const submitFn: SubmitHandler<CommentFieldValues> = (data) => {
     createMutation.mutate({
       ...data,

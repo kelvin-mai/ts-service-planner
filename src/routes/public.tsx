@@ -21,7 +21,6 @@ export const publicRoutes: RouteObject = {
     },
     {
       path: '/blog/',
-      element: <Outlet />,
       children: [
         {
           path: '',

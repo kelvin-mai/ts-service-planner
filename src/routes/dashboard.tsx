@@ -9,5 +9,11 @@ export const dashbaordRoutes: RouteObject = {
       <Outlet />
     </DashboardLayout>
   ),
-  children: [{ path: 'account', lazy: () => import('@/pages/account') }],
+  children: [
+    { path: 'account', lazy: () => import('@/pages/account') },
+    { path: 'calendar', lazy: () => import('@/pages/calendar') },
+    { path: 'dashboard', lazy: () => import('@/pages/dashboard') },
+    { path: 'files', lazy: () => import('@/pages/files') },
+    { path: 'people', lazy: () => import('@/pages/people') },
+  ],
 };
